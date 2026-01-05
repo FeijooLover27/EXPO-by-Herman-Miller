@@ -1,0 +1,184 @@
+:root{
+  --bg: #0b0b0b;
+  --page: #ffffff;
+  --border: #f1f1f1;
+
+  --sans: "zodiak", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --serif: "zodiak-serif", Georgia, Cambria, "Times New Roman", Times, serif;
+
+  /* Swatches sacados del screenshot (aprox exacto) */
+  --swatch-pink:   #FFBFCC;
+  --swatch-green:  #768269;
+  --swatch-arcilla:#D28068;
+  --swatch-blue:   #003980;
+
+  --atc: #A10B2B;
+}
+
+@import url('zodiak.css');
+
+* { box-sizing: border-box; }
+
+body{
+  margin: 0;
+  background: var(--bg);
+  font-family: var(--sans);
+}
+
+/* Marco blanco central como tu Figma */
+.frame{
+  width: 100vw;
+  min-height: 100vh;
+  background: var(--page);
+  padding: clamp(16px, 2.2vw, 28px);
+}
+
+/* Meta arriba */
+.top-meta{
+  height: 28px;
+}
+.top-meta__label{
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4a4a4a;
+}
+
+/* Carrusel */
+.carousel-section{
+  margin-top: 8px;
+  display: flex;
+}
+.carousel-wrap{
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  user-select: none;
+  touch-action: pan-y; /* permite scroll vertical en móvil pero no horizontal accidental */
+}
+
+.carousel-track{
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  gap: clamp(5px, 1vw, 10px);
+  will-change: transform;
+}
+
+.slide{
+  flex: 0 0 var(--slide-w, clamp(240px, 30vw, 420px));
+  height: 100%;
+  background: #fff;
+  overflow: hidden;
+}
+
+.slide img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none; /* importante para drag */
+}
+
+/* Tipos inferiores */
+.product-title{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(44px, 5vw, 74px);
+  letter-spacing: -0.02em;
+  color: #111;
+}
+
+.edition{
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(40px, 4.6vw, 70px);
+  color: #111;
+}
+
+.color-label{
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6a6a6a;
+  margin-bottom: 8px;
+}
+
+/* Swatches */
+.swatches{
+  display: flex;
+  align-items: center;
+  max-width: 520px;
+}
+
+.swatch{
+  height: 55px;
+  border: none;
+  background: #ddd;
+  padding: 0;
+  cursor: pointer;
+  flex: 0 0 72px;
+  transition: flex-basis 220ms ease, transform 220ms ease;
+}
+
+.swatch.is-active{
+  flex: 1 0 160px;
+  transform: translateY(-1px);
+}
+
+.swatch:focus-visible{
+  outline: 2px solid rgba(0,0,0,0.55);
+  outline-offset: 3px;
+}
+
+/* Add to cart */
+.atc{
+  border: none;
+  background: var(--atc);
+  color: #fff;
+  width: min(240px, 100%);
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 6px 12px;
+  text-align: left;
+}
+
+.atc__title{
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.atc__price{
+  font-size: 11px;
+  opacity: 0.92;
+}
+
+.atc__plus{
+  grid-row: 1 / span 2;
+  font-size: 18px;
+  line-height: 1;
+  align-self: start;
+}
+
+/* Responsive: en móvil quieres que se entienda y no se rompa */
+@media (max-width: 767px){
+  .frame{
+    width: calc(100vw - 24px);
+    margin: 12px auto;
+    min-height: calc(100vh - 24px);
+  }
+
+  .swatches{
+    max-width: 100%;
+  }
+
+  .swatch{
+    flex-basis: 56px;
+  }
+
+  .swatch.is-active{
+    flex-basis: 120px;
+  }
+}
