@@ -13,8 +13,8 @@ const PRODUCT = {
   // “images” es el set que se pinta en el carrusel para ese color.
   variants: [
     {
-      id: "negro",
-      label: "NEGRO",
+      id: "rosa",
+      label: "ROSA",
       swatch: "#FFBFCC",
       images: [
         "media/img/productonegro01.jpg",
