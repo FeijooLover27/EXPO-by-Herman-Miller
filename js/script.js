@@ -163,6 +163,22 @@ function renderSwatches() {
   });
 }
 
+function applySlideWidths() {
+  const h = carouselWrap.clientHeight || 1;
+
+  track.querySelectorAll(".slide").forEach((slide) => {
+    const img = slide.querySelector("img");
+    const nw = img?.naturalWidth || 0;
+    const nh = img?.naturalHeight || 0;
+
+    // fallback si no cargó
+    const ratio = (nw > 0 && nh > 0) ? (nw / nh) : 1;
+
+    const w = Math.round(h * ratio);
+    slide.style.width = `${w}px`;
+  });
+}
+
 async function renderCarousel(images) {
   track.innerHTML = "";
 
@@ -183,10 +199,25 @@ async function renderCarousel(images) {
   });
 
   await waitForImages(track);
+  applySlideWidths();
   measureLoop();
   // resetea a una posición limpia
   x = 0;
   gsap.set(track, { x });
+}
+
+function applyMobileWidths() {
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+  if (!isMobile) return;
+
+  const w = carouselWrap.clientWidth || 1;
+
+  track.querySelectorAll(".slide").forEach((slide) => {
+    slide.style.width = `${w}px`;
+    slide.style.flex = `0 0 ${w}px`;
+    const img = slide.querySelector("img");
+    if (img) img.style.objectFit = "contain";
+  });
 }
 
 function measureLoop() {
