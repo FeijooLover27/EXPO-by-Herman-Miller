@@ -1,329 +1,278 @@
-/* =========================
-   CONFIG “DATOS”
-   Cambia aquí títulos, precio y rutas de imágenes.
-   ========================= */
+/* global gsap, ScrollTrigger, Flip */
+(() => {
+  // ================================
+  // GSAP
+  // ================================
+  if (typeof gsap === "undefined") return;
+  gsap.registerPlugin(ScrollTrigger, Flip);
 
-const PRODUCT = {
-  title: "PRODUCTO",
-  edition: "001",
-  price: "1000€",
+  // ================================
+  // ELEMENTS
+  // ================================
+  const main = document.querySelector(".hm-product");
+  const hero = document.querySelector("#product-hero");
 
-  // IMPORTANTE: el “label” es el texto que sale como NEGRO / etc.
-  // “swatch” es el color del rectángulo.
-  // “images” es el set que se pinta en el carrusel para ese color.
-  variants: [
-    {
-      id: "rosa",
-      label: "ROSA",
-      swatch: "#FFBFCC",
-      images: [
-        "media/img/productonegro01.jpg",
-        "media/img/productonegro02.jpg",
-        "media/img/productonegro03.jpg",
-        "media/img/productonegro04.jpg",
-        "media/img/productonegro05.jpg",
-        "media/img/productonegro06.jpg",
-      ],
-    },
-    {
-      id: "verde",
-      label: "VERDE",
-      swatch: "#768269",
-      images: [
-        "media/img/productoverde01.jpg",
-        "media/img/productoverde02.jpg",
-        "media/img/productoverde03.jpg",
-        "media/img/productoverde04.jpg",
-        "media/img/productoverde05.jpg",
-        "media/img/productoverde06.jpg",
-      ],
-    },
-    {
-      id: "arcilla",
-      label: "ARCILLA",
-      swatch: "#D28068",
-      images: [
-        "media/img/productoarcilla01.jpg",
-        "media/img/productoarcilla02.jpg",
-        "media/img/productoarcilla03.jpg",
-        "media/img/productoarcilla04.jpg",
-        "media/img/productoarcilla05.jpg",
-        "media/img/productoarcilla06.jpg",
-      ],
-    },
-    {
-      id: "azul",
-      label: "AZUL",
-      swatch: "#003980",
-      images: [
-        "media/img/productoazul01.jpg",
-        "media/img/productoazul02.jpg",
-        "media/img/productoazul03.jpg",
-        "media/img/productoazul04.jpg",
-        "media/img/productoazul05.jpg",
-        "media/img/productoazul06.jpg",
-      ],
-    },
-  ],
-};
+  const bar = document.querySelector("#productBar");
 
-/* =========================
-   ELEMENTOS
-   ========================= */
-const elTitle = document.getElementById("productTitle");
-const elEdition = document.getElementById("editionNumber");
-const elPrice = document.getElementById("priceTag");
-const elColorLabel = document.getElementById("colorLabel");
+  const viewport = document.querySelector("#carouselViewport");
+  const track = document.querySelector("#carouselTrack");
 
-const swatchesWrap = document.getElementById("swatches");
-const carouselWrap = document.getElementById("carouselWrap");
-const track = document.getElementById("carouselTrack");
+  const swatches = Array.from(document.querySelectorAll(".hm-swatch"));
+  const labelEl = document.querySelector(".hm-bar__label");
+  const addBtn = document.querySelector("#addToCart");
 
-/* =========================
-   ESTADO
-   ========================= */
-let activeVariant = PRODUCT.variants[0];
+  if (!main || !hero || !bar || !viewport || !track) return;
 
-let x = 0;
-let loopWidth = 0;
-let wrapX = (v) => v;
-
-let isDragging = false;
-let dragStartX = 0;
-let dragStartTrackX = 0;
-
-// velocidad “constante”
-const pxPerSecond = 42;
-
-/* =========================
-   UTILS
-   ========================= */
-function clamp(n, min, max) {
-  return Math.max(min, Math.min(max, n));
-}
-
-function waitForImages(container) {
-  const imgs = Array.from(container.querySelectorAll("img"));
-  return Promise.all(
-    imgs.map((img) => {
-      if (img.complete) return Promise.resolve();
-      return new Promise((resolve) => {
-        img.addEventListener("load", resolve, { once: true });
-        img.addEventListener("error", resolve, { once: true }); // no rompas si falta una imagen
-      });
-    })
-  );
-}
-
-function setActiveSwatchButton(variantId) {
-  const btns = swatchesWrap.querySelectorAll(".swatch");
-  btns.forEach((b) => {
-    const isActive = b.dataset.variant === variantId;
-    b.classList.toggle("is-active", isActive);
-    b.setAttribute("aria-selected", String(isActive));
-    b.tabIndex = isActive ? 0 : -1;
-  });
-}
-
-/* =========================
-   RENDER
-   ========================= */
-function renderMeta() {
-  elTitle.textContent = PRODUCT.title;
-  elEdition.textContent = PRODUCT.edition;
-  elPrice.textContent = PRODUCT.price;
-}
-
-function renderSwatches() {
-  swatchesWrap.innerHTML = "";
-
-  PRODUCT.variants.forEach((v, idx) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "swatch";
-    btn.style.background = v.swatch;
-    btn.dataset.variant = v.id;
-    btn.setAttribute("role", "tab");
-    btn.setAttribute("aria-label", `Color ${v.label}`);
-    btn.tabIndex = idx === 0 ? 0 : -1;
-
-    btn.addEventListener("click", () => setVariant(v.id));
-    btn.addEventListener("keydown", (e) => {
-      // accesible: flechas izquierda/derecha cambian color
-      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-      e.preventDefault();
-      const currentIndex = PRODUCT.variants.findIndex((vv) => vv.id === activeVariant.id);
-      const dir = e.key === "ArrowRight" ? 1 : -1;
-      const nextIndex = clamp(currentIndex + dir, 0, PRODUCT.variants.length - 1);
-      setVariant(PRODUCT.variants[nextIndex].id);
-      swatchesWrap.querySelector(`[data-variant="${PRODUCT.variants[nextIndex].id}"]`)?.focus();
-    });
-
-    swatchesWrap.appendChild(btn);
-  });
-}
-
-function applySlideWidths() {
-  const h = carouselWrap.clientHeight || 1;
-
-  track.querySelectorAll(".slide").forEach((slide) => {
-    const img = slide.querySelector("img");
-    const nw = img?.naturalWidth || 0;
-    const nh = img?.naturalHeight || 0;
-
-    // fallback si no cargó
-    const ratio = (nw > 0 && nh > 0) ? (nw / nh) : 1;
-
-    const w = Math.round(h * ratio);
-    slide.style.width = `${w}px`;
-  });
-}
-
-async function renderCarousel(images) {
-  track.innerHTML = "";
-
-  // Duplicamos para loop infinito sin “saltos”
-  const list = [...images, ...images];
-
-  list.forEach((src) => {
-    const slide = document.createElement("div");
-    slide.className = "slide";
-
-    const img = document.createElement("img");
-    img.src = src;
-    img.alt = PRODUCT.title;
-    img.draggable = false;
-
-    slide.appendChild(img);
-    track.appendChild(slide);
-  });
-
-  await waitForImages(track);
-  applySlideWidths();
-  measureLoop();
-  // resetea a una posición limpia
-  x = 0;
-  gsap.set(track, { x });
-}
-
-function applyMobileWidths() {
-  const isMobile = window.matchMedia("(max-width: 768px)").matches;
-  if (!isMobile) return;
-
-  const w = carouselWrap.clientWidth || 1;
-
-  track.querySelectorAll(".slide").forEach((slide) => {
-    slide.style.width = `${w}px`;
-    slide.style.flex = `0 0 ${w}px`;
-    const img = slide.querySelector("img");
-    if (img) img.style.objectFit = "contain";
-  });
-}
-
-function measureLoop() {
-  // El track tiene 2 bloques iguales => loopWidth es la mitad
-  loopWidth = track.scrollWidth / 2;
-
-  // Evita wrap roto si hay 0 (por ejemplo si no cargaron imágenes)
-  if (!loopWidth || !Number.isFinite(loopWidth)) {
-    loopWidth = 1;
-  }
-
-  wrapX = gsap.utils.wrap(-loopWidth, 0);
-  x = wrapX(x);
-  gsap.set(track, { x });
-}
-
-/* =========================
-   CAMBIO DE VARIANTE
-   ========================= */
-async function setVariant(variantId) {
-  const v = PRODUCT.variants.find((vv) => vv.id === variantId);
-  if (!v || v.id === activeVariant.id) return;
-
-  activeVariant = v;
-
-  elColorLabel.textContent = v.label;
-  setActiveSwatchButton(v.id);
-
-  // micro animación al cambiar (limpia y rápida)
-  gsap.to(track, { opacity: 0, duration: 0.18, ease: "power1.out" });
-  await renderCarousel(v.images);
-  gsap.to(track, { opacity: 1, duration: 0.18, ease: "power1.out" });
-}
-
-/* =========================
-   LOOP AUTO (GSAP ticker)
-   ========================= */
-function startAutoLoop() {
-  gsap.ticker.add(() => {
-    if (isDragging) return;
-
-    // deltaRatio(60) -> 1 si estás a 60fps
-    const ratio = gsap.ticker.deltaRatio(60);
-    const step = (pxPerSecond / 60) * ratio;
-
-    x -= step;
-    x = wrapX(x);
-    gsap.set(track, { x });
-  });
-}
-
-/* =========================
-   DRAG (sin Draggable plugin)
-   ========================= */
-function setupDrag() {
-  carouselWrap.addEventListener("pointerdown", (e) => {
-    isDragging = true;
-    dragStartX = e.clientX;
-    dragStartTrackX = Number(gsap.getProperty(track, "x")) || 0;
-
-    carouselWrap.setPointerCapture?.(e.pointerId);
-  });
-
-  carouselWrap.addEventListener("pointermove", (e) => {
-    if (!isDragging) return;
-
-    const dx = e.clientX - dragStartX;
-    x = wrapX(dragStartTrackX + dx);
-    gsap.set(track, { x });
-  });
-
-  const endDrag = (e) => {
-    if (!isDragging) return;
-    isDragging = false;
-    carouselWrap.releasePointerCapture?.(e.pointerId);
+  // ================================
+  // HELPERS
+  // ================================
+  const getFramePadPx = () => {
+    const frame = document.querySelector(".hm-product__frame");
+    return frame ? parseFloat(getComputedStyle(frame).paddingLeft) : 24;
   };
 
-  carouselWrap.addEventListener("pointerup", endDrag);
-  carouselWrap.addEventListener("pointercancel", endDrag);
-  carouselWrap.addEventListener("pointerleave", endDrag);
-}
+  const getLeftbarWPx = () => {
+    const v = getComputedStyle(main).getPropertyValue("--leftbar-w").trim();
+    return parseFloat(v) || 240;
+  };
 
-/* =========================
-   INIT
-   ========================= */
-async function init() {
-  renderMeta();
-  renderSwatches();
+  const setContentOffsetInstant = (px) => {
+    main.style.setProperty("--content-pl", `${px}px`);
+  };
 
-  // estado inicial
-  elColorLabel.textContent = activeVariant.label;
-  setActiveSwatchButton(activeVariant.id);
+  const animateContentOffset = (toLeft) => {
+    const framePad = getFramePadPx();
+    const leftW = getLeftbarWPx();
+    const target = toLeft ? (leftW + framePad) : framePad;
 
-  await renderCarousel(activeVariant.images);
+    gsap.to(main, {
+      duration: 0.55,
+      ease: "power2.inOut",
+      "--content-pl": `${target}px`
+    });
+  };
 
-  setupDrag();
-  startAutoLoop();
+  // Estado inicial
+  setContentOffsetInstant(getFramePadPx());
 
-  // responsive: recalcula el loop al redimensionar
-  let resizeT;
+  // ================================
+  // 1) BAR TRANSITION (BOTTOM -> LEFT) con FLIP
+  // ================================
+  let isLeft = false;
+
+  function goLeft() {
+    if (isLeft) return;
+    isLeft = true;
+
+    const flipState = Flip.getState(bar);
+
+    bar.classList.add("is-left");
+    main.classList.add("has-leftbar");
+
+    Flip.from(flipState, {
+      duration: 0.55,
+      ease: "power2.inOut",
+      absolute: true
+    });
+
+    animateContentOffset(true);
+  }
+
+  function goBottom() {
+    if (!isLeft) return;
+    isLeft = false;
+
+    const flipState = Flip.getState(bar);
+
+    bar.classList.remove("is-left");
+    main.classList.remove("has-leftbar");
+
+    Flip.from(flipState, {
+      duration: 0.55,
+      ease: "power2.inOut",
+      absolute: true
+    });
+
+    animateContentOffset(false);
+  }
+
+  ScrollTrigger.create({
+    trigger: hero,
+    start: "bottom top+=1",
+    onEnter: goLeft,
+    onLeaveBack: goBottom
+  });
+
+  // Recalcular offsets en resize (y reconstruir carrusel)
   window.addEventListener("resize", () => {
-    window.clearTimeout(resizeT);
-    resizeT = window.setTimeout(() => {
-      measureLoop();
+    clearTimeout(window.__hmResizeAllT);
+    window.__hmResizeAllT = setTimeout(() => {
+      const framePad = getFramePadPx();
+      const leftW = getLeftbarWPx();
+      setContentOffsetInstant(isLeft ? (leftW + framePad) : framePad);
+      buildCarousel();
     }, 120);
   });
-}
 
-init();
+  // ================================
+  // 2) CAROUSEL LOOP + DRAG
+  // ================================
+  const loop = {
+    x: 0,
+    isDragging: false,
+    pointerId: null,
+    startClientX: 0,
+    startX: 0,
+    speedPxPerSec: 110,
+    loopWidth: 0,
+    wrapX: (v) => v
+  };
+
+  function measureLoopWidth() {
+    const baseItems = Array.from(track.querySelectorAll('[data-base="true"]'));
+    const gap = parseFloat(getComputedStyle(track).gap || "0") || 0;
+
+    const widths = baseItems.map(el => el.getBoundingClientRect().width);
+    const sum = widths.reduce((acc, w) => acc + w, 0);
+
+    loop.loopWidth = sum + gap * Math.max(0, baseItems.length - 1);
+    loop.wrapX = gsap.utils.wrap(-loop.loopWidth, 0);
+  }
+
+  function ensureClones() {
+    track.querySelectorAll('[data-clone="true"]').forEach(n => n.remove());
+
+    const baseItems = Array.from(track.querySelectorAll('[data-base="true"]'));
+    if (!baseItems.length) return;
+
+    const viewportW = viewport.getBoundingClientRect().width;
+    const gap = parseFloat(getComputedStyle(track).gap || "0") || 0;
+
+    const baseWidth =
+      baseItems.reduce((acc, el) => acc + el.getBoundingClientRect().width, 0) +
+      gap * Math.max(0, baseItems.length - 1);
+
+    let total = baseWidth;
+    while (total < viewportW * 2.2) {
+      baseItems.forEach((el) => {
+        const clone = el.cloneNode(true);
+        clone.dataset.clone = "true";
+        clone.removeAttribute("data-base");
+        track.appendChild(clone);
+      });
+      total += baseWidth;
+    }
+  }
+
+  function applyX() {
+    const wrapped = loop.wrapX(loop.x);
+    gsap.set(track, { x: wrapped });
+  }
+
+  function buildCarousel() {
+    loop.x = 0;
+    ensureClones();
+    measureLoopWidth();
+    applyX();
+  }
+
+  gsap.ticker.add(() => {
+    if (loop.isDragging) return;
+    const dt = gsap.ticker.deltaRatio(60);
+    const step = (loop.speedPxPerSec / 60) * dt;
+    loop.x = loop.wrapX(loop.x - step);
+    applyX();
+  });
+
+  function onPointerDown(e) {
+    if (e.button !== undefined && e.button !== 0) return;
+
+    loop.isDragging = true;
+    loop.pointerId = e.pointerId ?? null;
+    loop.startClientX = e.clientX;
+    loop.startX = loop.x;
+
+    track.classList.add("is-grabbing");
+    viewport.setPointerCapture?.(e.pointerId);
+
+    e.preventDefault();
+  }
+
+  function onPointerMove(e) {
+    if (!loop.isDragging) return;
+    if (loop.pointerId !== null && e.pointerId !== loop.pointerId) return;
+
+    const dx = e.clientX - loop.startClientX;
+    loop.x = loop.wrapX(loop.startX + dx);
+    applyX();
+  }
+
+  function endDrag(e) {
+    if (!loop.isDragging) return;
+    if (loop.pointerId !== null && e.pointerId !== loop.pointerId) return;
+
+    loop.isDragging = false;
+    loop.pointerId = null;
+
+    track.classList.remove("is-grabbing");
+    viewport.releasePointerCapture?.(e.pointerId);
+  }
+
+  viewport.addEventListener("pointerdown", onPointerDown, { passive: false });
+  window.addEventListener("pointermove", onPointerMove, { passive: true });
+  window.addEventListener("pointerup", endDrag, { passive: true });
+  window.addEventListener("pointercancel", endDrag, { passive: true });
+
+  window.addEventListener("load", buildCarousel);
+
+  // ================================
+  // 3) SWATCHES + swap imágenes opcional
+  // ================================
+  const imageSets = {
+    rosa: ["media/img/productonegro01.jpg", "media/img/productonegro02.jpg", "media/img/productonegro03.jpg"],
+    verde: ["media/img/green-01.jpg", "media/img/green-02.jpg", "media/img/green-03.jpg"],
+    terracota: ["media/img/terracota-01.jpg", "media/img/terracota-02.jpg", "media/img/terracota-03.jpg"],
+    azul: ["media/img/blue-01.jpg", "media/img/blue-02.jpg", "media/img/blue-03.jpg"]
+  };
+
+  function swapBaseImages(colorKey) {
+    const urls = imageSets[colorKey];
+    if (!urls) return;
+
+    const baseImgs = Array.from(track.querySelectorAll('[data-base="true"] img'));
+    baseImgs.forEach((img, i) => {
+      if (!urls[i]) return;
+      img.src = urls[i];
+    });
+
+    buildCarousel();
+  }
+
+  swatches.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const colorKey = btn.dataset.colorKey;
+      const colorName = btn.dataset.colorName || "";
+
+      swatches.forEach(b => {
+        b.classList.remove("is-active");
+        b.setAttribute("aria-checked", "false");
+      });
+
+      btn.classList.add("is-active");
+      btn.setAttribute("aria-checked", "true");
+
+      if (labelEl) labelEl.textContent = colorName;
+
+      swapBaseImages(colorKey);
+    });
+  });
+
+  // ================================
+  // 4) ADD TO CART (feedback)
+  // ================================
+  addBtn?.addEventListener("click", () => {
+    gsap.fromTo(addBtn, { y: 0 }, { y: -2, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" });
+    const plus = addBtn.querySelector(".hm-add__plus");
+    if (plus) gsap.fromTo(plus, { rotate: 0 }, { rotate: 90, duration: 0.18, ease: "power2.out" });
+  });
+})();

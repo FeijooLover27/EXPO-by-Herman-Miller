@@ -3,72 +3,124 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Producto</title>
+  <title>Producto · Herman Miller</title>
 
   <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Tipos (parecido al look editorial del Figma) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
   <!-- Tu CSS -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body>
-  <main class="frame container-fluid d-flex flex-column">
-    <!-- Meta superior -->
-    <div class="top-meta d-flex align-items-center">
-      <div class="top-meta__label">PRODUCTO - AF</div>
-    </div>
+  <!-- HEADER: NO TOCAR (lo gestiona tu compañero) -->
+  <!-- <header>...</header> -->
 
-    <!-- Carrusel -->
-    <section class="carousel-section flex-grow-1">
-      <div class="carousel-wrap" id="carouselWrap" aria-label="Carrusel de producto">
-        <div class="carousel-track" id="carouselTrack"></div>
-      </div>
-    </section>
-
-    <!-- Info inferior -->
-    <section class="bottom-section mt-3 mt-md-0">
-      <div class="row align-items-end g-2">
-        <div class="col-8">
-          <h1 class="product-title m-0" id="productTitle">PRODUCTO</h1>
-        </div>
-        <div class="col-4 text-end">
-          <div class="edition" id="editionNumber">001</div>
-        </div>
-      </div>
-
-      <div class="row align-items-end g-3 mt-2 mt-md-3">
-        <div class="col-12 col-md-8">
-          <div class="color-label" id="colorLabel">ROSA</div>
-          <div class="swatches" id="swatches" role="tablist" aria-label="Selector de color">
-            <!-- JS pinta los swatches aquí -->
+  <main class="hm-product">
+    <!-- HERO (primera “página”) -->
+    <section id="product-hero" class="hm-product__hero">
+      <div class="hm-product__frame container-fluid">
+        <!-- Carrusel 75vh, loop + drag -->
+        <div class="hm-carousel" aria-label="Galería del producto">
+          <div class="hm-carousel__viewport" id="carouselViewport">
+            <div class="hm-carousel__track" id="carouselTrack">
+              <!-- Base items (los clones se crean por JS) -->
+              <article class="hm-carousel__item" data-base="true">
+                <img src="media/img/productonegro01.jpg" alt="Power Bar en escena 1">
+              </article>
+              <article class="hm-carousel__item" data-base="true">
+                <img src="media/img/productonegro02.jpg" alt="Power Bar en escena 2">
+              </article>
+              <article class="hm-carousel__item" data-base="true">
+                <img src="media/img/productonegro03.jpg" alt="Power Bar en escena 3">
+              </article>
+            </div>
           </div>
         </div>
 
-        <div class="col-12 col-md-4 d-flex justify-content-md-end">
-          <button class="atc" type="button" aria-label="Añadir al carrito">
-            <span class="atc__title">Añadir al carrito</span>
-            <span class="atc__plus" aria-hidden="true">+</span>
-            <span class="atc__price" id="priceTag">1000€</span>
+        <!-- Título + edición -->
+        <div class="hm-product__headline d-flex justify-content-between align-items-end">
+          <h2 class="hm-product__title m-0">PRODUCTO</h2>
+          <div class="hm-product__edition" id="editionNum">001</div>
+        </div>
+
+        <!-- Barra inferior (luego pasa a sidebar izquierda al hacer scroll) -->
+        <div class="hm-bar" id="productBar">
+          <div class="hm-bar__left">
+            <div class="hm-bar__label">ROSA</div>
+
+            <div class="hm-swatches" role="radiogroup" aria-label="Colores">
+              <button class="hm-swatch is-active"
+                      type="button"
+                      role="radio"
+                      aria-checked="true"
+                      data-color-key="rosa"
+                      data-color-name="ROSA"
+                      aria-label="Color rosa"></button>
+
+              <button class="hm-swatch"
+                      type="button"
+                      role="radio"
+                      aria-checked="false"
+                      data-color-key="verde"
+                      data-color-name="VERDE"
+                      aria-label="Color verde"></button>
+
+              <button class="hm-swatch"
+                      type="button"
+                      role="radio"
+                      aria-checked="false"
+                      data-color-key="terracota"
+                      data-color-name="TERRACOTA"
+                      aria-label="Color terracota"></button>
+
+              <button class="hm-swatch"
+                      type="button"
+                      role="radio"
+                      aria-checked="false"
+                      data-color-key="azul"
+                      data-color-name="AZUL"
+                      aria-label="Color azul"></button>
+            </div>
+          </div>
+
+          <button class="hm-add" id="addToCart" type="button">
+            <span class="hm-add__text">Añadir al carrito</span>
+            <span class="hm-add__price">1000€</span>
+            <span class="hm-add__plus" aria-hidden="true">+</span>
           </button>
         </div>
       </div>
     </section>
+
+    <!-- SECCIÓN 2: EXACTAMENTE 100vh -->
+    <section class="hm-product__detail" id="productDetail">
+      <div class="container-fluid hm-product__detailInner">
+        <p class="hm-detail__copy m-0">
+          Power Bar es un elemento de diseño contemporáneo que le da el toque final a su soporte para TV de Pedestal.
+          Gracias al imán que incorpora, Power Bar se puede colocar en la parte trasera del soporte o en cualquier
+          superficie magnética. Va genial en cualquier parte de casa y, además, gracias a la longitud de su cable hace
+          que sea muy fácil mover el soporte para TV. Como tiene tres enchufes, no le toca buscar otras fuentes de energía
+          para cargar los dispositivos detrás de la TV. Este modelo está fabricado con materiales de alta calidad y ofrece
+          una seguridad que no deja lugar a dudas.
+        </p>
+
+        <figure class="hm-detail__figure">
+          <img src="media/img/productonegro03.jpg" alt="Power Bar en exterior">
+        </figure>
+      </div>
+    </section>
   </main>
 
-  <!-- Bootstrap bundle -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- GSAP (para scroll/animaciones; aquí lo usamos para el loop del carrusel) -->
+  <!-- GSAP + plugins -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
 
   <!-- Tu JS -->
-  <script src="js/script.js"></script>
+  <script src="js/script.js" defer></script>
 </body>
 </html>
