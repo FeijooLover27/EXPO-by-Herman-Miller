@@ -33,31 +33,56 @@ body {
 .bg-model-gray { background-color: var(--bg-soft-gray); }
 .bg-model-bone { background-color: var(--bg-warm-bone); }
 
-/* TIPOGRAFÍA */
-h1, h2, h3, .brand-font {
+/* --- TIPOGRAFÍA (AQUÍ ESTÁ EL CAMBIO IMPORTANTE) --- */
+
+/* Sobrescribimos Bootstrap para Títulos */
+h1, h2, h3, .brand-font, .display-1, .display-3 {
     font-family: var(--font-serif);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em; /* Kerning más apretado para elegancia */
+    font-weight: 400; /* Más fino, menos peso */
 }
 
-.lead, p, button, .text-muted {
+/* El Hero "Herman Miller" - Más contenido */
+.header-hero h1 {
+    font-size: 4rem !important; /* Antes era 6rem */
+    line-height: 1;
+}
+
+/* Títulos de Productos - Fino y Editorial */
+h2.display-3 {
+    font-size: 2rem !important; /* Drástica reducción (era ~4.5rem) */
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+}
+
+/* Cuerpo de texto - Pequeño y con aire */
+.lead, p, button, .text-muted, .text-secondary {
     font-family: var(--font-sans);
     font-weight: 300;
 }
 
-p{
-    font-size: 1em;
+p.text-secondary {
+    font-size: 0.9rem !important; /* Texto pequeño (aprox 14px) */
+    line-height: 1.6; /* Interlineado generoso para leer bien */
+    color: #333 !important;
 }
 
+/* Etiquetas (001 - Iluminación) */
+.text-muted.fs-7, .text-uppercase.tracking-wide {
+    font-size: 0.75rem !important; /* Muy pequeño (12px) */
+    letter-spacing: 0.1em;
+    font-weight: 500;
+}
+
+/* Precio */
 .price-tag {
     font-family: var(--font-serif);
-    font-weight: 600;
-    letter-spacing: -1px;
+    font-weight: 500;
+    font-size: 1.4rem !important; /* Precio contenido */
+    letter-spacing: -0.5px;
 }
 
-.tracking-wide { letter-spacing: 0.1em; }
-.fs-7 { font-size: 0.85rem; }
-
-/* BOTONES */
+/* Botones */
 .btn-editorial {
     border: none;
     background: transparent;
@@ -66,6 +91,7 @@ p{
     border-radius: 0;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-size: 0.8rem !important; /* Botón pequeño */
 }
 
 .btn-editorial:hover {
@@ -73,22 +99,18 @@ p{
     border-color: var(--color-wine);
 }
 
-/* GRILLA */
-.border-grid-top { border-top: 1px solid rgba(0,0,0,0.1); }
-.border-grid-right { border-right: 1px solid rgba(0,0,0,0.1); }
-.border-grid-left { border-left: 1px solid rgba(0,0,0,0.1); }
+/* --- LAYOUT Y ESTRUCTURA --- */
 
-/* LAYOUT */
+/* GRILLA */
+.border-grid-top { border-top: 1px solid rgba(0,0,0,0.08); } /* Líneas más sutiles */
+.border-grid-right { border-right: 1px solid rgba(0,0,0,0.08); }
+.border-grid-left { border-left: 1px solid rgba(0,0,0,0.08); }
+
 .scroll-section {
     height: 100dvh;
     width: 100%;
     position: relative;
     overflow: hidden;
-}
-
-.header-hero h1 {
-    font-size: 6rem;
-    line-height: 0.9;
 }
 
 /* 3D */
@@ -97,37 +119,70 @@ model-viewer {
     height: 100%;
     --poster-color: transparent;
     background-color: transparent;
-    /* Aseguramos que se muestre en bloque */
     display: block; 
 }
 
-/* CORRECCIÓN RESPONSIVE MÓVIL CRÍTICA */
+/* --- RESPONSIVE MÓVIL (< 991px) --- */
 @media (max-width: 991px) {
-    .header-hero h1 { font-size: 3.5rem; }
     
+    /* Títulos en móvil aún más ajustados */
+    .header-hero h1 { 
+        font-size: 3rem !important; 
+    }
+
+    h2.display-3 {
+        font-size: 1.75rem !important; 
+    }
+    
+    /* Layout Móvil */
     .border-grid-right, .border-grid-left { border-right: none; border-left: none; }
     
-    /* En móvil, altura automática y visible */
     .scroll-section {
         height: auto !important;
         min-height: 100dvh;
         overflow: visible !important;
     }
 
-    /* Forzar altura visible para los contenedores de los modelos */
+    /* Padding Lateral Móvil - Aumentamos el espacio para el texto */
+    .scroll-section .p-5 {
+        padding: 1.5rem !important; /* Margen cómodo */
+        padding-top: 3rem !important;
+        padding-bottom: 3rem !important;
+    }
+
+    /* Altura de modelos en móvil */
     .scroll-section .col-12.bg-model-gray,
     .scroll-section .col-12.bg-model-bone {
         height: 50vh !important;
-        min-height: 400px;
+        min-height: 350px;
         position: relative;
-        display: block; /* Asegurar renderizado */
+        display: block;
     }
 
     .scroll-section .col-12.bg-white {
         height: auto !important;
-        padding-top: 3rem !important;
-        padding-bottom: 3rem !important;
+        padding: 0 !important;
     }
     
     model-viewer { pointer-events: none !important; }
+}
+
+/* --- ANIMACIÓN FLECHA (JUMP / BOUNCE) --- */
+
+.animate-bounce {
+    /* Nombre de la animación | Duración | Curva de velocidad | Repetición */
+    animation: jump-arrow 2s ease-in-out infinite;
+    display: inline-block; /* Necesario para que el transform funcione bien */
+}
+
+@keyframes jump-arrow {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(15px); /* Baja 15 píxeles */
+    }
+    100% {
+        transform: translateY(0); /* Vuelve al sitio */
+    }
 }
