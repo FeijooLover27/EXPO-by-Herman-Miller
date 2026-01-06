@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Editorial 2026</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+</head>
+<body>
+
+    <nav class="fixed-top p-4 w-100 d-flex justify-content-between align-items-start mix-blend-difference" style="z-index: 100; pointer-events: none;">
+        <span class="brand-font fs-4 fw-bold text-dark">HermanMiller<span style="font-family: sans-serif; font-size: 0.5em; vertical-align: top;">®</span></span>
+        <div class="d-flex gap-4 fs-6 text-uppercase fw-bold text-dark" style="letter-spacing: 1px;">
+            <span>Menú</span>
+            <span>Buscar</span>
+        </div>
+    </nav>
+
+    <section class="scroll-section d-flex align-items-center bg-white">
+        <div class="container-fluid h-100">
+            <div class="row h-100">
+                <div class="col-12 d-flex align-items-center justify-content-center header-hero">
+                    <div id="main-header-text" class="text-center position-relative z-2">
+                        <h1 class="display-1 mb-0">Herman<br>Miller</h1>
+                        <p class="mt-4 fs-5 text-uppercase text-muted" style="letter-spacing: 2px;">Diseño para vivir</p>
+                        <div class="mt-5 animate-bounce">↓</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="scroll-section bg-white border-grid-top">
+        <div class="container-fluid h-100 p-0">
+            <div class="row h-100 m-0 flex-column-reverse flex-md-row">
+                
+                <div class="col-12 col-md-4 d-flex flex-column border-grid-right bg-white position-relative z-2 p-0">
+                    <div class="p-5 d-flex flex-column justify-content-start flex-grow-1 pt-md-5 mt-md-5">
+                        <span class="text-muted fs-7 text-uppercase tracking-wide">001 — Iluminación</span>
+                        <h2 class="display-3 mt-3 mb-4">Lámpara de trípode<br>Nelson Pear</h2>
+                        <p class="text-secondary lh-lg mb-4" style="max-width: 320px;">
+                            La lámpara Pear de Nelson de tres patas está disponible en dos tamaños, con una base trípode de acero que permite colocarla en una amplia variedad de entornos; y se ofrece con un práctico cable de 2,28 m. Disponible en una diversidad de luces de variadas siluetas esféricas, las Lámparas Nelson Bubble aportan un toque de suavidad y luminosidad a los interiores.
+                        </p>
+                        <div class="d-flex align-items-baseline gap-4 mt-2">
+                            <span class="fs-3 price-tag">1.250€</span>
+                            <button class="btn-editorial text-uppercase fs-7 fw-bold">Añadir a la cesta +</button>
+                        </div>
+                    </div>
+                    <div class="p-4 border-grid-top bg-light-subtle">
+                        <div class="row g-4">
+                            <div class="col-6">
+                                <strong class="d-block text-uppercase fs-7 mb-1 text-black">Materiales</strong>
+                                <span class="text-muted fs-7">Acero y Papel</span>
+                            </div>
+                            <div class="col-6">
+                                <strong class="d-block text-uppercase fs-7 mb-1 text-black">Diseñado por:</strong>
+                                <span class="text-muted fs-7">George Nelson</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-8 h-100 p-0 position-relative bg-model-gray">
+                    <span class="position-absolute top-0 end-0 p-3 brand-font text-black-50 opacity-25" style="font-size: 10rem; line-height: 1;">01</span>
+                    <model-viewer 
+                        src="media/3d/Lámpara de trípode Nelson Pear.glb" 
+                        camera-orbit="0deg 90deg 100%"
+                        shadow-intensity="1"
+                        exposure="1.2" 
+                        disable-zoom disable-pan interaction-prompt="none"
+                        style="pointer-events: none;">
+                    </model-viewer>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="scroll-section bg-white border-grid-top">
+        <div class="container-fluid h-100 p-0">
+            <div class="row h-100 m-0 flex-column flex-md-row">
+                
+                <div class="col-12 col-md-8 h-100 p-0 position-relative bg-model-bone order-1 order-md-1">
+                     <span class="position-absolute top-0 start-0 p-3 brand-font text-black-50 opacity-25" style="font-size: 10rem; line-height: 1;">02</span>
+                    <model-viewer 
+                        src="https://modelviewer.dev/shared-assets/models/RobotExpressive.glb"
+                        camera-orbit="0deg 90deg 2.5m"
+                        shadow-intensity="1"
+                        disable-zoom disable-pan interaction-prompt="none"
+                        style="pointer-events: none;">
+                    </model-viewer>
+                </div>
+
+                <div class="col-12 col-md-4 d-flex flex-column border-grid-left bg-white position-relative z-2 p-0 order-2 order-md-2" style="border-left: 1px solid rgba(0,0,0,0.1);">
+                    <div class="p-5 d-flex flex-column justify-content-start flex-grow-1 pt-md-5 mt-md-5">
+                        <span class="text-muted fs-7 text-uppercase tracking-wide">002 — Iluminación</span>
+                        <h2 class="display-3 mt-3 mb-4">Noguchi<br>Light</h2>
+                        <p class="text-secondary lh-lg mb-4" style="max-width: 320px;">
+                            Escultura luminosa. Akari 1A es tanto una obra de arte como una fuente de luz funcional hecha de papel washi y bambú.
+                        </p>
+                        <div class="d-flex align-items-baseline gap-4 mt-2">
+                            <span class="fs-3 price-tag" style="color: var(--color-wine);">450€</span>
+                            <button class="btn-editorial text-uppercase fs-7 fw-bold">Añadir a la cesta +</button>
+                        </div>
+                    </div>
+                    <div class="p-4 border-grid-top bg-light-subtle">
+                        <div class="row g-4">
+                            <div class="col-6">
+                                <strong class="d-block text-uppercase fs-7 mb-1 text-black">Material</strong>
+                                <span class="text-muted fs-7">Papel Washi</span>
+                            </div>
+                            <div class="col-6">
+                                <strong class="d-block text-uppercase fs-7 mb-1 text-black">Diseño</strong>
+                                <span class="text-muted fs-7">Isamu Noguchi</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-5 bg-white border-grid-top text-center">
+        <h3 class="brand-font display-5 mb-4">HermanMiller</h3>
+        <p class="text-muted">© 2026 Catálogo Digital</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
