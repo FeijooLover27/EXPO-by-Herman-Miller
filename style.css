@@ -44,6 +44,10 @@ h1, h2, h3, .brand-font {
     font-weight: 300;
 }
 
+p{
+    font-size: 1em;
+}
+
 .price-tag {
     font-family: var(--font-serif);
     font-weight: 600;

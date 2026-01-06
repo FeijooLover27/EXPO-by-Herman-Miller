@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ease: "none",
                 onUpdate: () => {
                     try {
-                        model.cameraOrbit = `${orbit.theta}deg 90deg 100%`;
+                        model.cameraOrbit = `${orbit.theta}deg 75deg 100%`;
                     } catch (e) {
                         // Prevención de errores
                     }
