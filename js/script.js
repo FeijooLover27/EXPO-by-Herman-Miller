@@ -18,7 +18,7 @@
   const track = document.querySelector("#carouselTrack");
 
   const swatches = Array.from(document.querySelectorAll(".hm-swatch"));
-  const labelEl = document.querySelector(".hm-bar__label");
+  const labelEl = document.querySelector("#colorLabel");
   const addBtn = document.querySelector("#addToCart");
 
   if (!main || !hero || !bar || !viewport || !track) return;
@@ -61,47 +61,77 @@
   let isLeft = false;
 
   function goLeft() {
-    if (isLeft) return;
-    isLeft = true;
+  if (isLeft) return;
+  isLeft = true;
 
-    const flipState = Flip.getState(bar);
+  // mata animaciones anteriores para evitar tirones
+  gsap.killTweensOf([bar, main]);
 
-    bar.classList.add("is-left");
-    main.classList.add("has-leftbar");
+  const flipState = Flip.getState(bar);
 
+  // opcional: evita clicks durante la transición
+  bar.style.pointerEvents = "none";
+
+  // aplica clases (cambio de layout)
+  bar.classList.add("is-left");
+  main.classList.add("has-leftbar");
+
+  // anima FLIP + offset coordinados
+  gsap.timeline({
+    defaults: { ease: "expo.inOut" },
+    onComplete: () => (bar.style.pointerEvents = "")
+  })
+  .add(() => {
     Flip.from(flipState, {
-      duration: 0.55,
-      ease: "power2.inOut",
-      absolute: true
+      duration: 0.85,
+      absolute: true,
+      scale: true,
+      fade: true,     // clave: suaviza la “aparición”
+      ease: "expo.inOut"
     });
+  }, 0)
+  .to(main, {
+    duration: 0.85,
+    "--content-pl": `${getLeftbarWPx() + getFramePadPx()}px`
+  }, 0);
+}
 
-    animateContentOffset(true);
-  }
+function goBottom() {
+  if (!isLeft) return;
+  isLeft = false;
 
-  function goBottom() {
-    if (!isLeft) return;
-    isLeft = false;
+  gsap.killTweensOf([bar, main]);
 
-    const flipState = Flip.getState(bar);
+  const flipState = Flip.getState(bar);
+  bar.style.pointerEvents = "none";
 
-    bar.classList.remove("is-left");
-    main.classList.remove("has-leftbar");
+  bar.classList.remove("is-left");
+  main.classList.remove("has-leftbar");
 
+  gsap.timeline({
+    defaults: { ease: "expo.inOut" },
+    onComplete: () => (bar.style.pointerEvents = "")
+  })
+  .add(() => {
     Flip.from(flipState, {
-      duration: 0.55,
-      ease: "power2.inOut",
-      absolute: true
+      duration: 0.85,
+      absolute: true,
+      scale: true,
+      fade: true,
+      ease: "expo.inOut"
     });
-
-    animateContentOffset(false);
-  }
-
-  ScrollTrigger.create({
-    trigger: hero,
-    start: "bottom top+=1",
-    onEnter: goLeft,
-    onLeaveBack: goBottom
-  });
+  }, 0)
+  .to(main, {
+    duration: 0.85,
+    "--content-pl": `${getFramePadPx()}px`
+  }, 0);
+}
+ScrollTrigger.create({
+  trigger: hero,
+  start: "bottom top+=1",
+  onEnter: goLeft,
+  onLeaveBack: goBottom
+});
 
   // Recalcular offsets en resize (y reconstruir carrusel)
   window.addEventListener("resize", () => {

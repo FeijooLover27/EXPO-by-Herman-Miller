@@ -7,15 +7,12 @@
 .hm-product{
   --frame-pad: clamp(10px, 1.5vw, 20px);
   --leftbar-w: 240px;
-
-  /* offset para que el sidebar NO tape contenido */
   --content-pl: var(--frame-pad);
-
   --zodiak: "Zodiak", serif;
   --ranade: "Ranade", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-
   background: #fff;
   color: #111;
+  will-change: --content-pl;
 }
 
 .hm-product.has-leftbar{
@@ -112,52 +109,40 @@
    ========================= */
 .hm-bar{
   --barH: 75px;
+  --actionH: 48px;
   margin-top: auto; 
   height: var(--barH);
   display: flex;
-  align-items: stretch;
+  align-items: flex-end;
   justify-content: space-between;
+  will-change: transform, width, height, top, left;
   gap: 18px;
   z-index: 60;
 }
 
 .hm-bar__left{
   height: 100%;
-  display: grid;          /* overlay sin absolute */
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .hm-bar__label{
-  grid-column: 1;
-  grid-row: 1;
-  align-self: start;
-  justify-self: start;
-  pointer-events: none;   /* no estorba al click */
-  z-index: 2;
+  font-family: var(--ranade);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  opacity: 0.75;
 }
 
 .hm-swatches{
-  grid-column: 1;
-  grid-row: 1;
-  align-self: end;        /* swatches abajo del todo */
-  z-index: 1;
   width: min(50vw, 560px);
   display: flex;
-  height: 100%;
+  height: var(--actionH);
   align-items: stretch;
   gap: 0;
 }
-
-/* Swatches horizontal: activo crece a lo ancho */
-/* .hm-swatches{
-  width: min(50vw, 560px);
-  height: 100%;
-  display: flex;
-  align-items: stretch;
-  gap: 0;
-} */
 
 .hm-swatch{
   flex: 1 1 0;
@@ -184,11 +169,11 @@
 
 /* Botón añadir */
 .hm-add{
-  height: 100%;
+  height: var(--actionH);
   border: none;
   background: #9b1232;
   color: #fff;
-  padding: 12px 14px;
+  padding: 8px 14px;
   min-width: 170px;
 
   display: grid;
@@ -243,10 +228,17 @@
   z-index: 80;
 }
 
+/* En sidebar, el bloque izquierdo usa todo el alto disponible */
+.hm-bar.is-left .hm-bar__left{
+  height: 100%;
+  justify-content: flex-start;
+  gap: 14px;
+}
+
 /* Sidebar swatches: activo crece en ALTURA */
 .hm-bar.is-left .hm-swatches{
   width: 100%;
-  height: min(46vh, 520px);
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -297,6 +289,7 @@
   font-size: 20px;
   line-height: 1.25;
   max-height: clamp(140px, 22vh, 220px);
+  overflow: auto;
   padding-right: 6px; /* para que no corte el scrollbar */
   margin: 0;
 }
@@ -324,7 +317,6 @@
     position: static;
     width: auto;
     height: auto;
-    border-left: var(--frame-border);
   }
 
   .hm-product.has-leftbar{
