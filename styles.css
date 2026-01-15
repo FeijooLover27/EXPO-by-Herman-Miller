@@ -1,0 +1,167 @@
+:root{
+  --red: #D2F029;
+  --red-deep: #636B36;
+  --grid-stroke: #ffffff;
+  --text-soft: rgb(255, 255, 255);
+}
+
+html, body { height: 100%; }
+
+body{
+  background: var(--red);
+  overflow: hidden;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* GRID DE FONDO (DESKTOP: 12x3 = 36 celdas visibles) */
+/* GRID DE FONDO */
+.grid-bg{
+  position: fixed;
+  inset: clamp(0.6rem, 1.6vw, 1.1rem);
+
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+
+  /* ✅ menos espacio entre cajas */
+  gap: clamp(0.25rem, 0.6vw, 0.5rem);
+
+  z-index: 1;
+}
+
+/* CELDAS */
+
+.cell { overflow: hidden; }
+.cell .cell-text { display:block; transform: translateY(0); transition: transform .28s ease; }
+.cell[data-pos="bottom"] .cell-text { transform: translateY(var(--dy, 0rem)); }
+
+.cell{
+  border-radius: clamp(0.75rem, 1.1vw, 1.05rem);
+  border: 0.0625rem solid rgba(255, 255, 255, 0.459);
+  background: transparent;
+
+  padding: clamp(0.35rem, 0.8vw, 0.6rem);
+
+  color:  #636B36;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: clamp(0.65rem, 0.9vw, 0.75rem);
+  line-height: 1.35;
+
+  overflow: hidden;
+  transition: background-color .22s ease, border-color .22s ease;
+}
+
+/* Hover: color clarito */
+.cell:hover{
+  background: rgba(255,255,255,.14);
+  border-color: rgba(255,255,255,.32);
+}
+
+/* Texto animable */
+.cell .cell-text{
+  display: block;
+  will-change: transform;
+  transform: translateY(0);
+  transition: transform .28s ease;
+}
+
+/* Estado “abajo” (se queda abajo hasta el siguiente hover/entrada) */
+.cell.is-bottom .cell-text{
+  transform: translateY(var(--dy, 0rem));
+}
+
+/* ✅ de arriba -> abajo al hover, y vuelve al salir */
+.cell:hover .cell-text{
+  transform: translateY(clamp(0.2rem, 0.9vh, 0.8rem));
+}
+
+/* (Opcional) Si quieres que algunas hagan lo contrario: abajo -> arriba */
+.cell.slide-up:hover .cell-text{
+  transform: translateY(calc(-1 * clamp(0.2rem, 0.9vh, 0.8rem)));
+}
+
+/* Variante small */
+.cell.small{
+  font-size: clamp(0.6rem, 0.85vw, 0.7rem);
+  letter-spacing: 0.07em;
+  opacity: .9;
+}
+
+
+/* PANEL CENTRAL */
+.menu-panel{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: min(27.5rem, 92vw);
+  height: min(47.5rem, 92vh);
+
+  background: var(--red-deep);
+
+  border-radius: 1.375rem;
+
+  box-shadow: 0 1.9rem 5rem rgba(0,0,0,.22);
+  z-index: 5;
+  overflow: hidden;
+}
+
+.menu-panel .inner{
+  height: 100%;
+  overflow: auto;
+
+  padding: clamp(1rem, 2vw, 1.4rem);
+  scrollbar-width: thin;
+}
+
+.section-title{
+  color: rgba(255,255,255,.7);
+  font-size: clamp(0.65rem, 0.9vw, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+
+  margin-bottom: clamp(0.5rem, 1vw, 0.7rem);
+}
+
+.menu-list{
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 clamp(1rem, 2vw, 1.4rem) 0;
+}
+
+.menu-list li{ margin: clamp(0.35rem, 0.8vw, 0.55rem) 0; }
+
+.menu-list a{
+  color: #fff;
+  text-decoration: none;
+
+  font-size: clamp(1.15rem, 2.2vw, 1.4rem);
+  font-weight: 500;
+  line-height: 1.25;
+
+  display: inline-block;
+}
+
+.menu-list a:hover{ text-decoration: underline; }
+
+.footer-links{
+  margin-top: auto;
+  padding-top: clamp(0.7rem, 1.4vw, 0.9rem);
+  border-top: 0.0625rem solid rgba(255,255,255,.12);
+
+  color: rgba(255,255,255,.75);
+  font-size: clamp(0.65rem, 0.9vw, 0.75rem);
+
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.7;
+}
+
+.footer-links a{
+  color: rgba(255,255,255,.85);
+  text-decoration: underline;
+}
