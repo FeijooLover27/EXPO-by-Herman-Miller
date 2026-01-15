@@ -1,72 +1,231 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EXPO by Herman Miller</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Menu Grid (Bootstrap)</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --red: #e0260f;
+      --red-deep: #b81c08;
+      --grid-stroke: rgba(255,255,255,.12);
+      --text-soft: rgba(255,255,255,.75);
+    }
+
+    html, body { height: 100%; }
+    body{
+      background: var(--red);
+      overflow: hidden;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    /* Fondo con celdas (se crean por JS) */
+    .grid-bg{
+      position: fixed;
+      inset: 18px;
+      display: grid;
+      grid-template-columns: repeat(var(--cols, 12), 1fr);
+      grid-template-rows: repeat(var(--rows, 6), 1fr);
+      gap: 12px;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .grid-bg .cell{
+      border-radius: 16px;
+      border: 1px solid var(--grid-stroke);
+      background: transparent;
+    }
+
+    /* Textos sueltos del fondo */
+    .bg-label{
+      position: fixed;
+      color: var(--text-soft);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 12px;
+      z-index: 2;
+      pointer-events: none;
+      user-select: none;
+    }
+    .bg-label.small{
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .07em;
+      line-height: 1.35;
+      max-width: 190px;
+      opacity: .85;
+    }
+
+    /* Panel central */
+    .menu-panel{
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(440px, 92vw);
+      height: min(760px, 92vh);
+      background: var(--red-deep);
+      border-radius: 22px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.22);
+      z-index: 5;
+      overflow: hidden;
+    }
+    .menu-panel .inner{
+      height: 100%;
+      overflow: auto;
+      padding: 22px 22px 18px 22px;
+    }
+
+    .section-title{
+      color: rgba(255,255,255,.7);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .menu-list{
+      list-style: none;
+      padding-left: 0;
+      margin: 0 0 22px 0;
+    }
+    .menu-list li{ margin: 8px 0; }
+    .menu-list a{
+      color: #fff;
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.25;
+      display: inline-block;
+    }
+    .menu-list a:hover{ text-decoration: underline; }
+
+    .footer-links{
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.75);
+      font-size: 12px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      line-height: 1.7;
+    }
+    .footer-links a{
+      color: rgba(255,255,255,.85);
+      text-decoration: underline;
+    }
+
+    /* Para que el scroll del panel sea más suave */
+    .menu-panel .inner { scrollbar-width: thin; }
+  </style>
 </head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    
-</head>
+
 <body>
-    
-<header class="navbar navbar-dark p-0" style="background:#5b0f0f;">
-  <div class="container-fluid px-3">
-    <div class="w-100 d-flex flex-column gap-2 py-2">
+  <!-- Fondo -->
+  <div class="grid-bg" id="gridBg" aria-hidden="true"></div>
 
-      <!-- Fila superior: logo + controles -->
-      <div class="d-flex align-items-center justify-content-between">
-        <a class="navbar-brand m-0 d-flex align-items-center gap-2" href="#">
-          <div class="bg-light rounded" style="width:72px; height:48px;"></div>
-        </a>
+  <!-- Textos del fondo (posiciones aproximadas como la referencia) -->
+  <div class="bg-label" style="top:28px; left:34px;">Designers and</div>
+  <div class="bg-label" style="top:220px; left:320px;">Developers</div>
+  <div class="bg-label" style="top:26px; left:62vw;">Who</div>
+  <div class="bg-label" style="top:26px; left:64.8vw;">I</div>
+  <div class="bg-label" style="top:26px; right:34px; text-align:right;">Build<br/>products that</div>
 
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-light btn-sm px-3" type="button" aria-label="Anterior">◀</button>
-          <span class="d-inline-block bg-light rounded-circle" style="width:26px; height:26px;"></span>
-          <button class="btn btn-outline-light btn-sm px-3" type="button" aria-label="Siguiente">▶</button>
-        </div>
+  <div class="bg-label small" style="top:310px; left:420px;">
+    Our culture is<br/>
+    a reflection<br/>
+    of our shared<br/>
+    values,<br/>
+    attitudes,<br/>
+    beliefs, and<br/>
+    working<br/>
+    practices.
+  </div>
+
+  <div class="bg-label small" style="bottom:84px; left:34px; max-width:220px;">
+    Good is not<br/>
+    where we stop.<br/>
+    It’s where we<br/>
+    begin.
+  </div>
+
+  <div class="bg-label" style="bottom:26px; left:360px;">I</div>
+  <div class="bg-label" style="bottom:26px; left:462px;">Will</div>
+  <div class="bg-label" style="bottom:26px; left:62vw;">Your users</div>
+  <div class="bg-label" style="bottom:26px; right:34px;">Love!</div>
+
+  <!-- Panel central (menú) -->
+  <div class="menu-panel text-white">
+    <div class="inner d-flex flex-column">
+      <div>
+        <div class="section-title">Projects</div>
+        <ul class="menu-list">
+          <li><a href="#">World</a></li>
+          <li><a href="#">World app</a></li>
+          <li><a href="#">Jellybean</a></li>
+          <li><a href="#">Nolla</a></li>
+          <li><a href="#">Final Offer</a></li>
+          <li><a href="#">Oteria</a></li>
+        </ul>
+
+        <div class="section-title mt-2">About us</div>
+        <ul class="menu-list">
+          <li><a href="#">Culture</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">View Deck</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
       </div>
 
-      <!-- Fila inferior: 4 items (IMÁGENES) -->
-      <ul class="nav nav-fill gap-2">
-        <li class="nav-item">
-          <a class="nav-link p-0 border border-light rounded overflow-hidden" href="#" aria-label="Item 1">
-            <img src="img/item1.jpg" alt="Item 1" class="img-fluid d-block" style="height:44px; width:100%; object-fit:cover;">
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link p-0 border border-light rounded overflow-hidden" href="#" aria-label="Item 2">
-            <img src="img/item2.jpg" alt="Item 2" class="img-fluid d-block" style="height:44px; width:100%; object-fit:cover;">
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link p-0 border border-light rounded overflow-hidden" href="#" aria-label="Item 3">
-            <img src="img/item3.jpg" alt="Item 3" class="img-fluid d-block" style="height:44px; width:100%; object-fit:cover;">
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link p-0 border border-light rounded overflow-hidden" href="#" aria-label="Item 4">
-            <img src="img/item4.jpg" alt="Item 4" class="img-fluid d-block" style="height:44px; width:100%; object-fit:cover;">
-          </a>
-        </li>
-      </ul>
-
+      <div class="footer-links mt-auto">
+        <div><a href="#">Privacy policy</a></div>
+        <div><a href="#">Legal info</a></div>
+        <div>Flabbergast Agency</div>
+        <div>FLB 2026 © All rights reserved</div>
+      </div>
     </div>
   </div>
-</header>
+
+  <!-- Bootstrap JS (opcional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Crea el grid del fondo (ajusta cols/rows según pantalla)
+    const grid = document.getElementById("gridBg");
+
+   function buildGrid(){
+  grid.innerHTML = "";
+
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  const cols = w >= 1200 ? 12 : (w >= 768 ? 10 : 6);
+
+  // antes: const rows = h >= 800 ? 6 : 5;
+  const baseRows = h >= 800 ? 6 : 5;
+  const rows = Math.max(1, baseRows - 3); // ✅ 3 filas menos
+
+  grid.style.setProperty("--cols", cols);
+  grid.style.setProperty("--rows", rows);
+
+  const total = cols * rows;
+  for(let i=0;i<total;i++){
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    grid.appendChild(cell);
+  }
+}
 
 
-    <main>
-        <p>Bienvenido a EXPO by Herman Miller</p>
-    </main>
-    <footer>
-        <p>&copy; 2024 Herman Miller. Todos los derechos reservados.</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    buildGrid();
+    window.addEventListener("resize", buildGrid);
+  </script>
 </body>
 </html>
