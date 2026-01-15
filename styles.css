@@ -1,8 +1,6 @@
 :root{
   --red: #D2F029;
   --red-deep: #636B36;
-  --grid-stroke: #ffffff;
-  --text-soft: rgb(255, 255, 255);
 }
 
 html, body { height: 100%; }
@@ -31,9 +29,6 @@ body{
 
 /* CELDAS */
 
-.cell { overflow: hidden; }
-.cell .cell-text { display:block; transform: translateY(0); transition: transform .28s ease; }
-.cell[data-pos="bottom"] .cell-text { transform: translateY(var(--dy, 0rem)); }
 
 .cell{
   border-radius: clamp(0.75rem, 1.1vw, 1.05rem);
@@ -55,7 +50,7 @@ body{
 
 /* Hover: color clarito */
 .cell:hover{
-  background: rgba(255,255,255,.14);
+  background:  #9eb91862;
   border-color: rgba(255,255,255,.32);
 }
 
@@ -63,24 +58,23 @@ body{
 .cell .cell-text{
   display: block;
   will-change: transform;
-  transform: translateY(0);
   transition: transform .28s ease;
 }
 
 /* Estado “abajo” (se queda abajo hasta el siguiente hover/entrada) */
-.cell.is-bottom .cell-text{
-  transform: translateY(var(--dy, 0rem));
+.in-bottom {
+ transform: translateY(clamp(15.5rem, 15rem, 0.8rem));
+}
+
+.in-top{
+  transform: translateY(0);
 }
 
 /* ✅ de arriba -> abajo al hover, y vuelve al salir */
-.cell:hover .cell-text{
-  transform: translateY(clamp(0.2rem, 0.9vh, 0.8rem));
-}
+
 
 /* (Opcional) Si quieres que algunas hagan lo contrario: abajo -> arriba */
-.cell.slide-up:hover .cell-text{
-  transform: translateY(calc(-1 * clamp(0.2rem, 0.9vh, 0.8rem)));
-}
+
 
 /* Variante small */
 .cell.small{

@@ -101,4 +101,31 @@
   } else {
     boot();
   }
+
+  // app.js
+
+
 })();
+
+        document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".cell").forEach((cell) => {
+            // Asegura estado inicial
+            if (!cell.classList.contains("in-top") && !cell.classList.contains("in-bottom")) {
+            cell.classList.add("in-top");
+            }
+
+            // Toggle al entrar con el ratón
+            cell.addEventListener("mouseenter", () => {
+            if (cell.classList.contains("in-bottom")) {
+                cell.classList.remove("in-bottom");
+                cell.classList.add("in-top");
+            } else {
+                cell.classList.remove("in-top");
+                cell.classList.add("in-bottom");
+                cell.classList.remove("in-top");
+            }
+            });
+        });
+        });
+
+
