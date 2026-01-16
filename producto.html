@@ -2,125 +2,179 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Producto · Herman Miller</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Producto 001 — Pedestal Expo</title>
 
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <!-- LocomotiveScroll CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
 
   <!-- Tu CSS -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <body>
-  <!-- HEADER: NO TOCAR (lo gestiona tu compañero) -->
-  <!-- <header>...</header> -->
-
-  <main class="hm-product">
-    <!-- HERO (primera “página”) -->
-    <section id="product-hero" class="hm-product__hero">
-      <div class="hm-product__frame container-fluid">
-        <!-- Carrusel 75vh, loop + drag -->
-        <div class="hm-carousel" aria-label="Galería del producto">
-          <div class="hm-carousel__viewport" id="carouselViewport">
-            <div class="hm-carousel__track" id="carouselTrack">
-              <!-- Base items (los clones se crean por JS) -->
-              <article class="hm-carousel__item" data-base="true">
-                <img src="media/img/productonegro01.jpg" alt="Power Bar en escena 1">
-              </article>
-              <article class="hm-carousel__item" data-base="true">
-                <img src="media/img/productonegro02.jpg" alt="Power Bar en escena 2">
-              </article>
-              <article class="hm-carousel__item" data-base="true">
-                <img src="media/img/productonegro03.jpg" alt="Power Bar en escena 3">
-              </article>
-            </div>
-          </div>
+  <div id="app">
+    <!-- FIXED SIDEBAR -->
+    <aside class="sidebar" id="fixedSidebar" aria-label="Opciones de producto">
+      <div class="sidebar__top">
+        <div class="product-title">
+          <div class="product-title__name">PRODUCTO</div>
+          <div class="product-title__num">001</div>
         </div>
+      </div>
 
-        <!-- Título + edición -->
-        <div class="hm-product__headline d-flex justify-content-between align-items-end">
-          <h2 class="hm-product__title m-0">PRODUCTO</h2>
-          <div class="hm-product__edition" id="editionNum">001</div>
-        </div>
+      <div class="sidebar__middle">
+        <!-- Arranque en AZUL -->
+        <div class="sidebar__label" id="colorLabel">AZUL</div>
 
-        <!-- Barra inferior (luego pasa a sidebar izquierda al hacer scroll) -->
-        <div class="hm-bar" id="productBar">
-          <div class="hm-bar__left">
-            <div class="hm-bar__label" id="colorLabel">ROSA</div>
+        <div class="swatches" role="tablist" aria-label="Colores">
+          <button class="swatch is-active" type="button" data-color="azul" role="tab" aria-selected="true">
+            <span class="swatch__fill swatch__fill--azul"></span>
+          </button>
 
-            <div class="hm-swatches" role="radiogroup" aria-label="Colores">
-              <button class="hm-swatch is-active"
-                      type="button"
-                      role="radio"
-                      aria-checked="true"
-                      data-color-key="rosa"
-                      data-color-name="ROSA"
-                      aria-label="Color rosa"></button>
+          <button class="swatch" type="button" data-color="rojo" role="tab" aria-selected="false">
+            <span class="swatch__fill swatch__fill--rojo"></span>
+          </button>
 
-              <button class="hm-swatch"
-                      type="button"
-                      role="radio"
-                      aria-checked="false"
-                      data-color-key="verde"
-                      data-color-name="VERDE"
-                      aria-label="Color verde"></button>
-
-              <button class="hm-swatch"
-                      type="button"
-                      role="radio"
-                      aria-checked="false"
-                      data-color-key="terracota"
-                      data-color-name="TERRACOTA"
-                      aria-label="Color terracota"></button>
-
-              <button class="hm-swatch"
-                      type="button"
-                      role="radio"
-                      aria-checked="false"
-                      data-color-key="azul"
-                      data-color-name="AZUL"
-                      aria-label="Color azul"></button>
-            </div>
-          </div>
-
-          <button class="hm-add" id="addToCart" type="button">
-            <span class="hm-add__text">Añadir al carrito</span>
-            <span class="hm-add__price">1000€</span>
-            <span class="hm-add__plus" aria-hidden="true">+</span>
+          <button class="swatch" type="button" data-color="terra" role="tab" aria-selected="false">
+            <span class="swatch__fill swatch__fill--terra"></span>
           </button>
         </div>
       </div>
-    </section>
 
-    <!-- SECCIÓN 2: EXACTAMENTE 100vh -->
-    <section class="hm-product__detail" id="productDetail">
-      <div class="container-fluid hm-product__detailInner">
-        <p class="hm-detail__copy m-0">
-          Power Bar es un elemento de diseño contemporáneo que le da el toque final a su soporte para TV de Pedestal.
-          Gracias al imán que incorpora, Power Bar se puede colocar en la parte trasera del soporte o en cualquier
-          superficie magnética. Va genial en cualquier parte de casa y, además, gracias a la longitud de su cable hace
-          que sea muy fácil mover el soporte para TV. Como tiene tres enchufes, no le toca buscar otras fuentes de energía
-          para cargar los dispositivos detrás de la TV. Este modelo está fabricado con materiales de alta calidad y ofrece
-          una seguridad que no deja lugar a dudas.
-        </p>
-
-        <figure class="hm-detail__figure">
-          <img src="media/img/productonegro03.jpg" alt="Power Bar en exterior">
-        </figure>
+      <div class="sidebar__bottom">
+        <button class="add-to-cart" type="button">
+          <span>Añadir al carrito</span>
+          <span class="add-to-cart__price">1000€</span>
+          <span class="add-to-cart__plus">+</span>
+        </button>
       </div>
-    </section>
-  </main>
+    </aside>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SCROLL CONTAINER (Locomotive) -->
+    <main class="scroll-container" data-scroll-container>
 
-  <!-- GSAP + plugins -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
+      <!-- =========================
+           SECCIÓN 1 (Carrusel) — 100vh
+      ========================== -->
+      <section class="product-page" data-scroll-section>
+        <div class="left-spacer" aria-hidden="true"></div>
+
+        <div class="carousel" id="carousel">
+          <div class="carousel__viewport" id="carouselViewport" aria-label="Galería del producto">
+            <div class="carousel__track" id="carouselTrack">
+
+              <!-- OJO:
+                   Cambias qué imagen va con cada color aquí:
+                   data-src-azul / data-src-rojo / data-src-terra
+                   He puesto SOLO archivos que existen en tu carpeta media/img para evitar 404.
+              -->
+              <figure class="slide">
+                <img
+                  class="slide__img"
+                  src="media/img/stand-azul1.jpg"
+                  data-src-azul="media/img/stand-azul1.jpg"
+                  data-src-rojo="media/img/stand-rojo1.jpg"
+                  data-src-terra="media/img/stand-terra1.jpg"
+                  alt="Vista principal del producto"
+                  draggable="false"
+                />
+              </figure>
+
+              <figure class="slide">
+                <img
+                  class="slide__img"
+                  src="media/img/stand-azul2.jpg"
+                  data-src-azul="media/img/stand-azul2.jpg"
+                  data-src-rojo="media/img/stand-rojo2.jpg"
+                  data-src-terra="media/img/stand-terra2.jpg"
+                  alt="Detalle del producto"
+                  draggable="false"
+                />
+              </figure>
+
+              <figure class="slide">
+                <img
+                  class="slide__img"
+                  src="media/img/stand-azul3.jpg"
+                  data-src-azul="media/img/stand-azul3.jpg"
+                  data-src-rojo="media/img/stand-rojo3.jpg"
+                  data-src-terra="media/img/stand-terra3.jpg"
+                  alt="Producto en contexto"
+                  draggable="false"
+                />
+              </figure>
+
+              <figure class="slide">
+                <img
+                  class="slide__img"
+                  src="media/img/stand-azul4.jpg"
+                  data-src-azul="media/img/stand-azul4.jpg"
+                  data-src-rojo="media/img/stand-rojo4.jpg"
+                  data-src-terra="media/img/stand-terra4.jpg"
+                  alt="Otra vista del producto"
+                  draggable="false"
+                />
+              </figure>
+
+            </div>
+          </div>
+
+          <div class="carousel__hint" aria-hidden="true">Drag</div>
+        </div>
+      </section>
+
+      <!-- =========================
+           SECCIÓN 2 (Texto + Video) — 100vh
+      ========================== -->
+      <section class="product-page product-page--video" data-scroll-section>
+        <div class="left-spacer" aria-hidden="true"></div>
+
+        <div class="video-layout">
+          <div class="video-copy">
+            <p>
+              Power Bar es un elemento de diseño contemporáneo que le da el toque final a su soporte para TV de
+              Pedestal. Gracias al imán que incorpora, Power Bar se puede colocar en la parte trasera del soporte o
+              en cualquier superficie magnética. Va genial en cualquier parte de casa y, además, gracias a la longitud
+              de su cable hace que sea muy fácil mover el soporte para TV de Pedestal. Como tiene tres enchufes, no le
+              toca buscar otras fuentes de energía para cargar los decodificadores detrás de la TV. Este modelo está
+              fabricado con los mejores materiales, presenta un acabado exclusivo y ofrece una calidad y una seguridad
+              que no deja lugar a dudas.
+            </p>
+          </div>
+
+          <div class="video-screen">
+            <!-- IMPORTANTE:
+                 - Crea carpeta: media/video/
+                 - Mete tus 3 vídeos: azul.mp4 rojo.mp4 terra.mp4 (o cambia rutas)
+            -->
+            <video
+              class="color-video"
+              id="powerbarVideo"
+              src="media/video/CUTDOWN 01 16x9.mp4"
+              data-src-azul="media/video/CUTDOWN 01 16x9.mp4"
+              data-src-rojo="media/video/CUTDOWN 03 16x9.mp4"
+              data-src-terra="media/video/CUTDOWN 04 16x9.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            ></video>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- GSAP -->
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+  <!-- LocomotiveScroll -->
+  <script defer src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
 
   <!-- Tu JS -->
-  <script src="js/script.js" defer></script>
+  <script defer src="js/script.js"></script>
 </body>
 </html>

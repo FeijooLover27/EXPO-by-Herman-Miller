@@ -1,308 +1,257 @@
-/* global gsap, ScrollTrigger, Flip */
 (() => {
-  // ================================
-  // GSAP
-  // ================================
-  if (typeof gsap === "undefined") return;
-  gsap.registerPlugin(ScrollTrigger, Flip);
-
-  // ================================
-  // ELEMENTS
-  // ================================
-  const main = document.querySelector(".hm-product");
-  const hero = document.querySelector("#product-hero");
-
-  const bar = document.querySelector("#productBar");
-
-  const viewport = document.querySelector("#carouselViewport");
-  const track = document.querySelector("#carouselTrack");
-
-  const swatches = Array.from(document.querySelectorAll(".hm-swatch"));
-  const labelEl = document.querySelector("#colorLabel");
-  const addBtn = document.querySelector("#addToCart");
-
-  if (!main || !hero || !bar || !viewport || !track) return;
-
-  // ================================
-  // HELPERS
-  // ================================
-  const getFramePadPx = () => {
-    const frame = document.querySelector(".hm-product__frame");
-    return frame ? parseFloat(getComputedStyle(frame).paddingLeft) : 24;
+  const COLORS = {
+    azul: "AZUL",
+    rojo: "ROJO",
+    terra: "TERRACOTA"
   };
 
-  const getLeftbarWPx = () => {
-    const v = getComputedStyle(main).getPropertyValue("--leftbar-w").trim();
-    return parseFloat(v) || 240;
-  };
+  let loco = null;
 
-  const setContentOffsetInstant = (px) => {
-    main.style.setProperty("--content-pl", `${px}px`);
-  };
+  // =========================
+  // Locomotive
+  // =========================
+  function initLocomotive() {
+    const el = document.querySelector("[data-scroll-container]");
+    if (!el || typeof LocomotiveScroll === "undefined") return;
 
-  const animateContentOffset = (toLeft) => {
-    const framePad = getFramePadPx();
-    const leftW = getLeftbarWPx();
-    const target = toLeft ? (leftW + framePad) : framePad;
-
-    gsap.to(main, {
-      duration: 0.55,
-      ease: "power2.inOut",
-      "--content-pl": `${target}px`
+    loco = new LocomotiveScroll({
+      el,
+      smooth: true,
+      lerp: 0.08,          // <- más bajo = más “pesado”, más alto = más rápido
+      multiplier: 1,
+      smartphone: { smooth: true, lerp: 0.12 },
+      tablet: { smooth: true, lerp: 0.1 },
+      getDirection: true,
+      getSpeed: true
     });
-  };
 
-  // Estado inicial
-  setContentOffsetInstant(getFramePadPx());
+    document.documentElement.classList.add("has-scroll-smooth");
 
-  // ================================
-  // 1) BAR TRANSITION (BOTTOM -> LEFT) con FLIP
-  // ================================
-  let isLeft = false;
+    // Si algo cambia el layout (cambiar imágenes, vídeos, fonts), refresca
+    setTimeout(() => loco.update(), 200);
 
-  function goLeft() {
-  if (isLeft) return;
-  isLeft = true;
-
-  // mata animaciones anteriores para evitar tirones
-  gsap.killTweensOf([bar, main]);
-
-  const flipState = Flip.getState(bar);
-
-  // opcional: evita clicks durante la transición
-  bar.style.pointerEvents = "none";
-
-  // aplica clases (cambio de layout)
-  bar.classList.add("is-left");
-  main.classList.add("has-leftbar");
-
-  // anima FLIP + offset coordinados
-  gsap.timeline({
-    defaults: { ease: "expo.inOut" },
-    onComplete: () => (bar.style.pointerEvents = "")
-  })
-  .add(() => {
-    Flip.from(flipState, {
-      duration: 0.85,
-      absolute: true,
-      scale: true,
-      fade: true,     // clave: suaviza la “aparición”
-      ease: "expo.inOut"
-    });
-  }, 0)
-  .to(main, {
-    duration: 0.85,
-    "--content-pl": `${getLeftbarWPx() + getFramePadPx()}px`
-  }, 0);
-}
-
-function goBottom() {
-  if (!isLeft) return;
-  isLeft = false;
-
-  gsap.killTweensOf([bar, main]);
-
-  const flipState = Flip.getState(bar);
-  bar.style.pointerEvents = "none";
-
-  bar.classList.remove("is-left");
-  main.classList.remove("has-leftbar");
-
-  gsap.timeline({
-    defaults: { ease: "expo.inOut" },
-    onComplete: () => (bar.style.pointerEvents = "")
-  })
-  .add(() => {
-    Flip.from(flipState, {
-      duration: 0.85,
-      absolute: true,
-      scale: true,
-      fade: true,
-      ease: "expo.inOut"
-    });
-  }, 0)
-  .to(main, {
-    duration: 0.85,
-    "--content-pl": `${getFramePadPx()}px`
-  }, 0);
-}
-ScrollTrigger.create({
-  trigger: hero,
-  start: "bottom top+=1",
-  onEnter: goLeft,
-  onLeaveBack: goBottom
-});
-
-  // Recalcular offsets en resize (y reconstruir carrusel)
-  window.addEventListener("resize", () => {
-    clearTimeout(window.__hmResizeAllT);
-    window.__hmResizeAllT = setTimeout(() => {
-      const framePad = getFramePadPx();
-      const leftW = getLeftbarWPx();
-      setContentOffsetInstant(isLeft ? (leftW + framePad) : framePad);
-      buildCarousel();
-    }, 120);
-  });
-
-  // ================================
-  // 2) CAROUSEL LOOP + DRAG
-  // ================================
-  const loop = {
-    x: 0,
-    isDragging: false,
-    pointerId: null,
-    startClientX: 0,
-    startX: 0,
-    speedPxPerSec: 110,
-    loopWidth: 0,
-    wrapX: (v) => v
-  };
-
-  function measureLoopWidth() {
-    const baseItems = Array.from(track.querySelectorAll('[data-base="true"]'));
-    const gap = parseFloat(getComputedStyle(track).gap || "0") || 0;
-
-    const widths = baseItems.map(el => el.getBoundingClientRect().width);
-    const sum = widths.reduce((acc, w) => acc + w, 0);
-
-    loop.loopWidth = sum + gap * Math.max(0, baseItems.length - 1);
-    loop.wrapX = gsap.utils.wrap(-loop.loopWidth, 0);
+    window.__loco = loco;
   }
 
-  function ensureClones() {
-    track.querySelectorAll('[data-clone="true"]').forEach(n => n.remove());
+  function refreshLoco() {
+    if (!loco) return;
+    // update en RAF para evitar jank
+    requestAnimationFrame(() => loco.update());
+  }
 
-    const baseItems = Array.from(track.querySelectorAll('[data-base="true"]'));
-    if (!baseItems.length) return;
+  // =========================
+  // Helpers
+  // =========================
+  function preloadImage(src) {
+    return new Promise((resolve, reject) => {
+      const im = new Image();
+      im.onload = () => resolve(src);
+      im.onerror = () => reject(new Error(`No se pudo cargar: ${src}`));
+      im.src = src;
+    });
+  }
 
-    const viewportW = viewport.getBoundingClientRect().width;
-    const gap = parseFloat(getComputedStyle(track).gap || "0") || 0;
+  async function swapImage(img, newSrc) {
+    if (!newSrc) return;
 
-    const baseWidth =
-      baseItems.reduce((acc, el) => acc + el.getBoundingClientRect().width, 0) +
-      gap * Math.max(0, baseItems.length - 1);
+    const prev = img.dataset.currentSrc || img.src;
+    if (prev && prev.endsWith(newSrc)) return;
 
-    let total = baseWidth;
-    while (total < viewportW * 2.2) {
-      baseItems.forEach((el) => {
-        const clone = el.cloneNode(true);
-        clone.dataset.clone = "true";
-        clone.removeAttribute("data-base");
-        track.appendChild(clone);
-      });
-      total += baseWidth;
+    gsap.to(img, { autoAlpha: 0, duration: 0.15, ease: "power1.out" });
+
+    try {
+      await preloadImage(newSrc);
+      img.src = newSrc;
+      img.dataset.currentSrc = newSrc;
+    } catch (e) {
+      console.warn(e.message);
+      img.src = prev;
     }
+
+    gsap.to(img, { autoAlpha: 1, duration: 0.2, ease: "power1.out" });
   }
 
-  function applyX() {
-    const wrapped = loop.wrapX(loop.x);
-    gsap.set(track, { x: wrapped });
+  function waitCanPlay(videoEl) {
+    return new Promise((resolve) => {
+      const done = () => resolve(true);
+      videoEl.addEventListener("canplay", done, { once: true });
+      setTimeout(done, 800);
+    });
   }
 
-  function buildCarousel() {
-    loop.x = 0;
-    ensureClones();
-    measureLoopWidth();
-    applyX();
+  async function swapVideo(videoEl, newSrc) {
+    if (!videoEl || !newSrc) return;
+
+    const prev = videoEl.dataset.currentSrc || videoEl.currentSrc || videoEl.src;
+    if (prev && prev.endsWith(newSrc)) return;
+
+    gsap.to(videoEl, { autoAlpha: 0, duration: 0.15, ease: "power1.out" });
+
+    try {
+      videoEl.src = newSrc;
+      videoEl.dataset.currentSrc = newSrc;
+      videoEl.load();
+      await waitCanPlay(videoEl);
+      const p = videoEl.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } catch (e) {
+      console.warn("Video swap:", e);
+      videoEl.src = prev;
+      videoEl.load();
+    }
+
+    gsap.to(videoEl, { autoAlpha: 1, duration: 0.2, ease: "power1.out" });
+
+    // el alto del video puede cambiar por metadata: refresca loco
+    refreshLoco();
   }
 
-  gsap.ticker.add(() => {
-    if (loop.isDragging) return;
-    const dt = gsap.ticker.deltaRatio(60);
-    const step = (loop.speedPxPerSec / 60) * dt;
-    loop.x = loop.wrapX(loop.x - step);
-    applyX();
-  });
+  // =========================
+  // Color swatches
+  // =========================
+  async function setColor(colorKey, animate = true) {
+    const label = document.getElementById("colorLabel");
+    if (label) label.textContent = COLORS[colorKey] || colorKey.toUpperCase();
 
-  function onPointerDown(e) {
-    if (e.button !== undefined && e.button !== 0) return;
-
-    loop.isDragging = true;
-    loop.pointerId = e.pointerId ?? null;
-    loop.startClientX = e.clientX;
-    loop.startX = loop.x;
-
-    track.classList.add("is-grabbing");
-    viewport.setPointerCapture?.(e.pointerId);
-
-    e.preventDefault();
-  }
-
-  function onPointerMove(e) {
-    if (!loop.isDragging) return;
-    if (loop.pointerId !== null && e.pointerId !== loop.pointerId) return;
-
-    const dx = e.clientX - loop.startClientX;
-    loop.x = loop.wrapX(loop.startX + dx);
-    applyX();
-  }
-
-  function endDrag(e) {
-    if (!loop.isDragging) return;
-    if (loop.pointerId !== null && e.pointerId !== loop.pointerId) return;
-
-    loop.isDragging = false;
-    loop.pointerId = null;
-
-    track.classList.remove("is-grabbing");
-    viewport.releasePointerCapture?.(e.pointerId);
-  }
-
-  viewport.addEventListener("pointerdown", onPointerDown, { passive: false });
-  window.addEventListener("pointermove", onPointerMove, { passive: true });
-  window.addEventListener("pointerup", endDrag, { passive: true });
-  window.addEventListener("pointercancel", endDrag, { passive: true });
-
-  window.addEventListener("load", buildCarousel);
-
-  // ================================
-  // 3) SWATCHES + swap imágenes opcional
-  // ================================
-  const imageSets = {
-    rosa: ["media/img/productonegro01.jpg", "media/img/productonegro02.jpg", "media/img/productonegro03.jpg"],
-    verde: ["media/img/green-01.jpg", "media/img/green-02.jpg", "media/img/green-03.jpg"],
-    terracota: ["media/img/terracota-01.jpg", "media/img/terracota-02.jpg", "media/img/terracota-03.jpg"],
-    azul: ["media/img/blue-01.jpg", "media/img/blue-02.jpg", "media/img/blue-03.jpg"]
-  };
-
-  function swapBaseImages(colorKey) {
-    const urls = imageSets[colorKey];
-    if (!urls) return;
-
-    const baseImgs = Array.from(track.querySelectorAll('[data-base="true"] img'));
-    baseImgs.forEach((img, i) => {
-      if (!urls[i]) return;
-      img.src = urls[i];
+    const swatches = Array.from(document.querySelectorAll(".swatch"));
+    swatches.forEach((btn) => {
+      const isActive = btn.dataset.color === colorKey;
+      btn.classList.toggle("is-active", isActive);
+      btn.setAttribute("aria-selected", String(isActive));
     });
 
-    buildCarousel();
+    gsap.to(swatches, {
+      flexGrow: (i, el) => (el.dataset.color === colorKey ? 4 : 2),
+      duration: animate ? 0.35 : 0,
+      ease: "power2.out",
+      overwrite: true
+    });
+
+    const imgs = Array.from(document.querySelectorAll(".slide__img"));
+    const imgAttr = `data-src-${colorKey}`;
+    await Promise.all(imgs.map((img) => swapImage(img, img.getAttribute(imgAttr))));
+
+    const vids = Array.from(document.querySelectorAll(".color-video"));
+    const vidAttr = `data-src-${colorKey}`;
+    await Promise.all(vids.map((v) => swapVideo(v, v.getAttribute(vidAttr))));
+
+    refreshLoco();
   }
 
-  swatches.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const colorKey = btn.dataset.colorKey;
-      const colorName = btn.dataset.colorName || "";
+  function initSwatches() {
+    const swatches = Array.from(document.querySelectorAll(".swatch"));
+    if (!swatches.length) return;
 
-      swatches.forEach(b => {
-        b.classList.remove("is-active");
-        b.setAttribute("aria-checked", "false");
+    swatches.forEach((btn) => {
+      btn.addEventListener("click", () => setColor(btn.dataset.color, true));
+    });
+
+    const active = swatches.find((b) => b.classList.contains("is-active")) || swatches[0];
+    if (active) setColor(active.dataset.color, false);
+  }
+
+  // =========================
+  // Carousel (no rompe el scroll vertical)
+  // =========================
+  function waitImagesLoaded(imgs) {
+    return Promise.all(
+      imgs.map((img) => {
+        if (img.complete) return Promise.resolve();
+        return new Promise((res) => {
+          img.addEventListener("load", res, { once: true });
+          img.addEventListener("error", res, { once: true });
+        });
+      })
+    );
+  }
+
+  function initCarousel() {
+    const viewport = document.getElementById("carouselViewport");
+    const track = document.getElementById("carouselTrack");
+    if (!viewport || !track || typeof gsap === "undefined") return;
+
+    const setX = gsap.quickSetter(track, "x", "px");
+
+    let x = 0;
+    let isDragging = false;
+    let pointerStart = 0;
+    let xStart = 0;
+
+    let loopWidth = 0;
+    let wrap = (v) => v;
+
+    const imgs = Array.from(track.querySelectorAll("img"));
+    waitImagesLoaded(imgs).then(() => {
+      const slides = Array.from(track.children);
+      slides.forEach((s) => track.appendChild(s.cloneNode(true)));
+
+      requestAnimationFrame(() => {
+        loopWidth = track.scrollWidth / 2;
+        wrap = gsap.utils.wrap(-loopWidth, 0);
+        x = wrap(x);
+        setX(x);
+        refreshLoco();
       });
-
-      btn.classList.add("is-active");
-      btn.setAttribute("aria-checked", "true");
-
-      if (labelEl) labelEl.textContent = colorName;
-
-      swapBaseImages(colorKey);
     });
-  });
 
-  // ================================
-  // 4) ADD TO CART (feedback)
-  // ================================
-  addBtn?.addEventListener("click", () => {
-    gsap.fromTo(addBtn, { y: 0 }, { y: -2, duration: 0.12, yoyo: true, repeat: 1, ease: "power2.out" });
-    const plus = addBtn.querySelector(".hm-add__plus");
-    if (plus) gsap.fromTo(plus, { rotate: 0 }, { rotate: 90, duration: 0.18, ease: "power2.out" });
+    const speed = 0.35;
+    gsap.ticker.add(() => {
+      if (!loopWidth) return;
+      if (isDragging) return;
+      x = wrap(x - speed);
+      setX(x);
+    });
+
+    viewport.addEventListener("pointerdown", (e) => {
+      isDragging = true;
+      viewport.classList.add("is-dragging");
+      pointerStart = e.clientX;
+      xStart = x;
+      viewport.setPointerCapture(e.pointerId);
+    });
+
+    viewport.addEventListener("pointermove", (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - pointerStart;
+      x = wrap(xStart + dx);
+      setX(x);
+    });
+
+    function endDrag(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      viewport.classList.remove("is-dragging");
+      try { viewport.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+
+    viewport.addEventListener("pointerup", endDrag);
+    viewport.addEventListener("pointercancel", endDrag);
+    viewport.addEventListener("pointerleave", (e) => { if (isDragging) endDrag(e); });
+
+    // wheel: solo horizontal mueve carrusel. vertical -> deja scroll loco
+    viewport.addEventListener("wheel", (e) => {
+      if (!loopWidth) return;
+      const ax = Math.abs(e.deltaX);
+      const ay = Math.abs(e.deltaY);
+      if (ay >= ax) return; // vertical
+      e.preventDefault();   // horizontal
+      x = wrap(x - e.deltaX * 0.9);
+      setX(x);
+    }, { passive: false });
+  }
+
+  // =========================
+  // Boot
+  // =========================
+  window.addEventListener("load", () => {
+    initLocomotive();
+    initSwatches();
+    initCarousel();
+
+    // Por si cargan fuentes tarde
+    setTimeout(() => refreshLoco(), 800);
+
+    // Extra: si el usuario cambia tamaño
+    window.addEventListener("resize", () => refreshLoco());
   });
 })();
