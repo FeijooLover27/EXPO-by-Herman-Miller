@@ -1,14 +1,13 @@
 :root{
     --bar-h: 84px; 
-    --red: #D2F029;
-    --red-deep: #636B36;
+    --red: #A10B2B;
+    --red-deep: #651300;
 }
 
 html, body { height: 100%; }
 
 body{
     
-    overflow: hidden;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
@@ -56,7 +55,9 @@ body{
   pointer-events: none;
 }
 
+
 .menu-bar{
+
     
     pointer-events: auto;
         
@@ -131,6 +132,8 @@ body{
 .site-header.is-open .icon-open{ display: none; }
 .site-header.is-open .icon-close{ display: inline; }
 .menu-bar.menu-toggle{
+    margin-top: 1rem;
+
   position: fixed;
   z-index: 999999;
 
@@ -185,7 +188,7 @@ body{
 
   padding: clamp(0.35rem, 0.8vw, 0.6rem);
 
-  color:  #636B36;
+  color:  #ffffff;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -197,12 +200,12 @@ body{
 }
 
 .cell-text.blink-white{
-  color: #fff;
+  color: #ffffff00;
 }
 
 /* Hover: color clarito */
 .cell:hover{
-  background:  #9eb91862;
+  background:  #ffffff31;
   border-color: rgba(255,255,255,.32);
 }
 
@@ -318,9 +321,39 @@ body{
   text-decoration: underline;
 }
 
+.cr2 {
+    height: 50vh !important;
+    border-color: var(--red-deep) !important;
+
+}
+
+.c2{
+    max-width: auto !important;
+    margin: 0 !important;
+}
+
+.footer-hero{
+  font-weight: 700rem;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  font-size: clamp(15rem, 10vw, 8rem);
+}
+
+
+
 @media (max-width: 48rem){
   .site-header{
     top: auto;
     bottom: clamp(0.8rem, 2vw, 1.2rem);
   }
+
+  .cr2{
+    height: 40vh !important;
+    border: none !important;
+  }
+
+  .footer-hero{
+    font-size: clamp(4.5rem, 15vw, 6rem);
+  }
 }
+

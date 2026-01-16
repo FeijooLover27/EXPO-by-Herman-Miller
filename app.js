@@ -13,7 +13,6 @@
   function fitCellText($cell){
     const $t = $cell.find('.cell-text');
 
-    // reset por si cambia el tamaño (resize)
     $t.css({ maxHeight: '', overflow: '' });
 
     const cellH = $cell.innerHeight();
