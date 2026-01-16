@@ -2,20 +2,27 @@
 @import url("./ranade.css");
 
 /* =========================
-   Base
+   Variables
 ========================= */
 :root{
-  --g: 12px;              /* gap sagrado */
+  --g: 12px;
+
   --sidebar-w: 280px;
+  --sidebar-h: 56px;
+
+  /* reserva vertical por sección */
+  --page-pad-top: var(--g);
+  --page-pad-bottom: var(--g);
+
+  --page-inner-h: calc(100vh - var(--page-pad-top) - var(--page-pad-bottom));
+
   --bg: #ffffff;
   --ink: rgba(10,10,10,.85);
 
-  /* Swatches */
   --azul: #003980;
   --rojo-swatch: #B0122A;
   --terra: #D0947C;
 
-  /* Botón */
   --rojo: #9C0025;
 }
 
@@ -26,42 +33,44 @@ body{
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: "Ranade", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  overflow: auto; /* fallback: si Locomotive no carga, que al menos haya scroll */
+  font-family: "Ranade-Variable", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-variation-settings: "wght" 100;
 }
 
-/* Si Locomotive está activo, ocultamos el overflow del body */
-html.has-scroll-smooth body{
-  overflow: hidden;
-}
-
+/* contenedor */
 #app{
   position: relative;
   min-height: 100vh;
 }
 
-/* Locomotive container */
 .scroll-container{
-  min-height: 100vh; /* IMPORTANTE: no lo encierres en 100vh fijo */
+  min-height: 100vh;
 }
 
 /* =========================
-   Sidebar fixed
+   Sidebar (DESKTOP): fixed izquierda
+   (BLINDADA con #fixedSidebar !important)
 ========================= */
 .sidebar{
-  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: var(--g);
+  z-index: 999;
+}
+
+/* 👇 blindaje */
+#fixedSidebar{
+  position: fixed !important;
   top: var(--g);
   left: var(--g);
   bottom: var(--g);
   width: var(--sidebar-w);
-  display: flex;
-  flex-direction: column;
-  gap: var(--g);
-  z-index: 50;
 }
 
+/* contenido sidebar */
 .product-title{
-  font-family: "Zodiak", serif;
+  font-family: "Zodiak-Variable", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-variation-settings: "wght" 100;
   letter-spacing: .02em;
   line-height: 1;
 }
@@ -127,35 +136,37 @@ html.has-scroll-smooth body{
   font-size: 12px;
 }
 
-.add-to-cart__price{
-  opacity: .9;
-  font-variant-numeric: tabular-nums;
-}
-.add-to-cart__plus{
-  font-size: 14px;
-  opacity: .95;
-}
+.add-to-cart span:first-child{ justify-self: start; }
+.add-to-cart__price{ opacity: .9; font-variant-numeric: tabular-nums; }
+.add-to-cart__plus{ font-size: 14px; opacity: .95; }
 
 /* =========================
-   Layout secciones (100vh cada una)
+   Secciones (DESKTOP)
 ========================= */
 .product-page{
   height: 100vh;
-  padding: var(--g);
+  height: 100svh;
+
+  padding-top: var(--page-pad-top);
+  padding-right: var(--g);
+  padding-bottom: var(--page-pad-bottom);
+  padding-left: var(--g);
+
   display: grid;
   grid-template-columns: var(--sidebar-w) 1fr;
   gap: var(--g);
   align-items: stretch;
 }
 
+.left-spacer{
+  width: 100%;
+  height: 100%;
+}
 
 /* =========================
-   Sección 1: Carrusel
+   Carrusel
 ========================= */
-.carousel{
-  position: relative;
-  height: calc(100vh - (var(--g) * 2));
-}
+.carousel{ position: relative; height: var(--page-inner-h); }
 
 .carousel__viewport{
   height: 100%;
@@ -203,18 +214,19 @@ html.has-scroll-smooth body{
 }
 
 /* =========================
-   Sección 2: Texto + Video
+   Video + texto
 ========================= */
 .video-layout{
-  height: calc(100vh - (var(--g) * 2));
+  height: var(--page-inner-h);
   display: grid;
   grid-template-rows: auto 1fr;
   gap: var(--g);
 }
 
 .video-copy{
-  font-family: "Zodiak", serif;
+  font-family: "Ranade", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   font-size: 28px;
+  font-weight: 200;
   line-height: 1.05;
   letter-spacing: .01em;
 }
@@ -226,7 +238,6 @@ html.has-scroll-smooth body{
   height: 100%;
   overflow: hidden;
 }
-
 .video-screen video{
   width: 100%;
   height: 100%;
@@ -234,9 +245,128 @@ html.has-scroll-smooth body{
   display: block;
 }
 
-/* Responsive */
-@media (max-width: 900px){
-  :root{ --sidebar-w: 210px; }
-  .slide{ width: 80vw; }
+.video-only-layout{
+  height: var(--page-inner-h);
+  width: 100%;
+}
+
+/* =========================
+   < 768px:
+   - Sidebar fixed abajo full-width (GRID estable)
+   - Reserva hueco abajo (incluye safe-area)
+   - Contenido 1 columna
+   - Carrusel 1 imagen visible
+========================= */
+@media (max-width: 768px){
+  :root{
+    --page-pad-top: var(--g);
+    --page-pad-bottom: calc(var(--sidebar-h) + env(safe-area-inset-bottom, 0px) + var(--g));
+    --page-inner-h: calc(100svh - var(--page-pad-top) - var(--page-pad-bottom));
+  }
+
+  /* Sidebar: full width abajo + GRID estable */
+  #fixedSidebar{
+    position: fixed !important;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: calc(var(--sidebar-h) + env(safe-area-inset-bottom, 0px));
+
+    padding-left: var(--g);
+    padding-right: var(--g);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    background: var(--bg);
+    border-top: 1px solid rgba(10,10,10,.08);
+
+    display: grid;
+    grid-template-columns: max-content 1fr minmax(170px, 240px);
+    gap: var(--g);
+
+    /* CLAVE: no centres todo */
+    align-items: stretch;
+  }
+
+  /* Columna 1: título centrado */
+  .sidebar__top{
+    display: flex;
+    align-items: center;
+    align-self: center; /* no se estira */
+  }
+  .product-title__name{ font-size: 16px; }
+  .product-title__num{ font-size: 14px; }
+
+  /* Columna 2: quitamos label y centramos swatches */
+  .sidebar__middle{
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    align-self: center; /* no se estira */
+  }
+
+  /* FUERA label en tablet/móvil */
+  .sidebar__label{
+    display: none;
+  }
+
+  /* Swatches: iguales, altura fija */
+  .swatches{
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 0;
+
+    height: 44px;
+    min-height: 44px;
+    width: 100%;
+  }
+
+  .swatch{
+    height: 100%;
+    width: 100%;
+  }
+  .swatch.is-active{
+    flex: none;
+  }
+  .swatch.is-active .swatch__fill{
+    outline: 2px solid rgba(10,10,10,.18);
+    outline-offset: -2px;
+  }
+
+  /* Columna 3: botón NO flota, rellena alto */
+  .sidebar__bottom{
+    display: flex;
+    align-items: stretch;
+    align-self: center;
+    height: 44px;
+    min-height: 44px;
+  }
+
+  .add-to-cart{
+    width: 100%;
+    height: 100%;
+    min-height: 44px;
+    font-size: 11px;
+    line-height: 1.1;
+  }
+
+
+  /* Secciones a 1 columna */
+  .product-page{
+    grid-template-columns: 1fr;
+  }
+  .left-spacer{ display: none; }
+
+  /* Carrusel: 1 slide visible */
+  .carousel__track{ gap: var(--g); }
+  .slide{
+    width: 100%;
+    flex: 0 0 100%;
+  }
+  .carousel__hint{ display: none; }
+
   .video-copy{ font-size: 22px; }
 }

@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Producto 001 — Pedestal Expo</title>
 
-  <!-- LocomotiveScroll CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
-
-  <!-- Tu CSS -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
@@ -24,7 +20,6 @@
       </div>
 
       <div class="sidebar__middle">
-        <!-- Arranque en AZUL -->
         <div class="sidebar__label" id="colorLabel">AZUL</div>
 
         <div class="swatches" role="tablist" aria-label="Colores">
@@ -51,27 +46,19 @@
       </div>
     </aside>
 
-    <!-- SCROLL CONTAINER (Locomotive) -->
-    <main class="scroll-container" data-scroll-container>
+    <!-- SCROLL CONTAINER (nativo) -->
+    <main class="scroll-container">
 
-      <!-- =========================
-           SECCIÓN 1 (Carrusel) — 100vh
-      ========================== -->
-      <section class="product-page" data-scroll-section>
+      <!-- SECCIÓN 1 (Carrusel) -->
+      <section class="product-page">
         <div class="left-spacer" aria-hidden="true"></div>
 
         <div class="carousel" id="carousel">
           <div class="carousel__viewport" id="carouselViewport" aria-label="Galería del producto">
             <div class="carousel__track" id="carouselTrack">
 
-              <!-- OJO:
-                   Cambias qué imagen va con cada color aquí:
-                   data-src-azul / data-src-rojo / data-src-terra
-                   He puesto SOLO archivos que existen en tu carpeta media/img para evitar 404.
-              -->
               <figure class="slide">
-                <img
-                  class="slide__img"
+                <img class="slide__img swap-img"
                   src="media/img/stand-azul1.jpg"
                   data-src-azul="media/img/stand-azul1.jpg"
                   data-src-rojo="media/img/stand-rojo1.jpg"
@@ -82,8 +69,7 @@
               </figure>
 
               <figure class="slide">
-                <img
-                  class="slide__img"
+                <img class="slide__img swap-img"
                   src="media/img/stand-azul2.jpg"
                   data-src-azul="media/img/stand-azul2.jpg"
                   data-src-rojo="media/img/stand-rojo2.jpg"
@@ -94,8 +80,7 @@
               </figure>
 
               <figure class="slide">
-                <img
-                  class="slide__img"
+                <img class="slide__img swap-img"
                   src="media/img/stand-azul3.jpg"
                   data-src-azul="media/img/stand-azul3.jpg"
                   data-src-rojo="media/img/stand-rojo3.jpg"
@@ -106,8 +91,7 @@
               </figure>
 
               <figure class="slide">
-                <img
-                  class="slide__img"
+                <img class="slide__img swap-img"
                   src="media/img/stand-azul4.jpg"
                   data-src-azul="media/img/stand-azul4.jpg"
                   data-src-rojo="media/img/stand-rojo4.jpg"
@@ -124,10 +108,8 @@
         </div>
       </section>
 
-      <!-- =========================
-           SECCIÓN 2 (Texto + Video) — 100vh
-      ========================== -->
-      <section class="product-page product-page--video" data-scroll-section>
+      <!-- SECCIÓN 2 (Texto + Video) -->
+      <section class="product-page product-page--video">
         <div class="left-spacer" aria-hidden="true"></div>
 
         <div class="video-layout">
@@ -144,23 +126,30 @@
           </div>
 
           <div class="video-screen">
-            <!-- IMPORTANTE:
-                 - Crea carpeta: media/video/
-                 - Mete tus 3 vídeos: azul.mp4 rojo.mp4 terra.mp4 (o cambia rutas)
-            -->
-            <video
-              class="color-video"
+            <video class="color-video"
               id="powerbarVideo"
               src="media/video/CUTDOWN 01 16x9.mp4"
               data-src-azul="media/video/CUTDOWN 01 16x9.mp4"
               data-src-rojo="media/video/CUTDOWN 03 16x9.mp4"
               data-src-terra="media/video/CUTDOWN 04 16x9.mp4"
-              autoplay
-              muted
-              loop
-              playsinline
-              preload="metadata"
-            ></video>
+              autoplay muted loop playsinline preload="metadata"></video>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3 (Video Fullscreen) -->
+      <section class="product-page product-page--video-only">
+        <div class="left-spacer" aria-hidden="true"></div>
+
+        <div class="video-only-layout">
+          <div class="video-screen">
+            <video class="color-video"
+              id="fullscreenVideo01"
+              src="media/video/video-azul2.mp4"
+              data-src-azul="media/video/video-azul2.mp4"
+              data-src-rojo="media/video/video-rosa2.mp4"
+              data-src-terra="media/video/video-azul2.mp4"
+              autoplay muted loop playsinline preload="metadata"></video>
           </div>
         </div>
       </section>
@@ -168,13 +157,7 @@
     </main>
   </div>
 
-  <!-- GSAP -->
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-
-  <!-- LocomotiveScroll -->
-  <script defer src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
-
-  <!-- Tu JS -->
   <script defer src="js/script.js"></script>
 </body>
 </html>
