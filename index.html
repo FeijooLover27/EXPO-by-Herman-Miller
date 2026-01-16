@@ -5,47 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Menu Grid (Bootstrap)</title>
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
 
-  <!-- Tu CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+
+
+ 
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
+<header class="site-header">
+  
 
-  <!-- FONDO (EDITAS AQUÍ EN EL HTML) -->
+
+<button class="menu-bar menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false">
+  <span class="menu-label">MENU</span>
+
+  <span class="burger" aria-hidden="true">
+    <i class="bi bi-list icon-open"></i>
+    <i class="bi bi-x-lg icon-close"></i>
+  </span>
+</button>
+
+  <div id="headerPanel" class="header-panel">
+  <!-- FONDO -->
   <div class="grid-bg">
     <!-- FILA 1 -->
-    <div class="cell"><span class="cell-text in-bottom">DESIGNERS AND</span></div>
+    <div class="cell">
+      <span class="cell-text in-top">CALLATE</span>
+    </div>
     <div class="cell"></div>
-    <div class="cell"><span class="cell-text">DEVELOPERS</span></div>
+    <div class="cell">
+      <span class="cell-text in-top">CALLATE</span>
+    </div>
     <div class="cell"></div>
     <div class="cell"></div>
     <div class="cell"></div>
     <div class="cell"></div>
     <div class="cell"></div>
-    <div class="cell">WHO</div>
-    <div class="cell">I</div>
+    <div class="cell">
+      <span class="cell-text in-bottom">CALLATE</span>
+    </div>
+    <div class="cell">
+      <span class="cell-text in-top">I</span>
+    </div>
     <div class="cell"></div>
     <div class="cell text-end">
-      <span class="cell-text">BUILD<br>PRODUCTS THAT</span>
+      <span class="cell-text in-top BIG">CALLATE</span>
     </div>
 
     <!-- FILA 2 -->
     <div class="cell"></div>
     <div class="cell"></div>
     <div class="cell"></div>
-    <div class="cell"></div>
+    <div class="cell">   
+      <span class="cell-text in-bottom">CALLATE</span>
+    </div>
     <div class="cell small">
-      OUR CULTURE IS<br>
-      A REFLECTION<br>
-      OF OUR SHARED<br>
-      VALUES,<br>
-      ATTITUDES,<br>
-      BELIEFS, AND<br>
-      WORKING<br>
-      PRACTICES.
+  
     </div>
     <div class="cell"></div>
     <div class="cell"></div>
@@ -57,58 +76,68 @@
 
     <!-- FILA 3 -->
     <div class="cell small">
-      GOOD IS NOT<br>
-      WHERE WE STOP.<br>
-      IT’S WHERE WE<br>
-      BEGIN.
+        <span class="cell-text in-bottom">CALLATE</span>
     </div>
     <div class="cell"></div>
     <div class="cell">I</div>
-    <div class="cell">WILL</div>
+    <div class="cell">
+      <span class="cell-text in-top">CALLATE</span>
+    </div>
     <div class="cell"></div>
     <div class="cell"></div>
     <div class="cell"></div>
     <div class="cell"></div>
-    <div class="cell">YOUR USERS</div>
+    <div class="cell">
+      <span class="cell-text in-top">CALLATE</span>
+    </div>
     <div class="cell"></div>
     <div class="cell"></div>
-    <div class="cell text-end">LOVE!</div>
+    <div class="cell text-end">
+      <span class="cell-text in-bottom">CALLATE</span>
+    </div>
   </div>
 
   <!-- PANEL CENTRAL -->
   <div class="menu-panel text-white">
-    <div class="inner d-flex flex-column">
-      <div>
-        <div class="section-title">Projects</div>
-        <ul class="menu-list">
-          <li><a href="#">World</a></li>
-          <li><a href="#">World app</a></li>
-          <li><a href="#">Jellybean</a></li>
-          <li><a href="#">Nolla</a></li>
-          <li><a href="#">Final Offer</a></li>
-          <li><a href="#">Oteria</a></li>
-        </ul>
+    
+  <div class="inner d-flex flex-column">
 
-        <div class="section-title mt-2">About us</div>
-        <ul class="menu-list">
-          <li><a href="#">Culture</a></li>
-          <li><a href="#">Careers</a></li>
-          <li><a href="#">Services</a></li>
-          <li><a href="#">View Deck</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
+    <div>
+      <div class="section-title"></div>
+      <ul class="menu-list">
+        <li><a href="#">World</a></li>
+        <li><a href="#">World app</a></li>
+        <li><a href="#">Jellybean</a></li>
+        <li><a href="#">Nolla</a></li>
+        <li><a href="#">Final Offer</a></li>
+        <li><a href="#">Oteria</a></li>
+      </ul>
 
-      <div class="footer-links mt-auto">
-        <div><a href="#">Privacy policy</a></div>
-        <div><a href="#">Legal info</a></div>
-        <div>Flabbergast Agency</div>
-        <div>FLB 2026 © All rights reserved</div>
-      </div>
+      <div><a class="section-title mt-2" href="#">ABOUT US</a></div>
+      <ul class="menu-list"></ul>
     </div>
+
+    <!-- Cerrar justo encima de la raya -->
+    <button class="menu-close mt-auto" type="button" aria-label="Cerrar menú">Cerrar</button>
+
+    <div class="footer-links">
+      <div><a href="#">Privacy policy</a></div>
+      <div><a href="#">Legal info</a></div>
+      <div>Flabbergast Agency</div>
+      <div>FLB 2026 © All rights reserved</div>
+    </div>
+
   </div>
+</div>
+
+
+
 
   <!-- Bootstrap JS (opcional) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="app.js"></script>
+  </div>
+</header>
 </body>
 </html>

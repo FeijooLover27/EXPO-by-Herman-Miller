@@ -1,131 +1,114 @@
-// app.js
+ $(function () {
+    $('.cell').on('mouseenter', function () {
+      const $t = $(this).find('.cell-text');
 
-// app.js
-(() => {
-  function pxToRem(px) {
-    const root = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-    return px / root;
+      if ($t.hasClass('in-bottom')) {
+        $t.removeClass('in-bottom').addClass('in-top');
+      } else if ($t.hasClass('in-top')) {
+        $t.removeClass('in-top').addClass('in-bottom');
+      }
+    });
+  });
+
+  function fitCellText($cell){
+    const $t = $cell.find('.cell-text');
+
+    // reset por si cambia el tamaño (resize)
+    $t.css({ maxHeight: '', overflow: '' });
+
+    const cellH = $cell.innerHeight();
+    const textH = $t.outerHeight(true);
+
+    if (textH > cellH) {
+      $t.css({
+        maxHeight: cellH + 'px',
+        overflow: 'hidden'
+      });
+    }
   }
 
-  // Envuelve el contenido de cada .cell en <span class="cell-text">...</span>
-  function ensureCellTextSpan(cell) {
-    if (cell.querySelector(".cell-text")) return;
-
-    const hasContent =
-      cell.textContent.trim().length > 0 || cell.children.length > 0;
-    if (!hasContent) return;
-
-    const span = document.createElement("span");
-    span.className = "cell-text";
-
-    // Mueve TODO (incluye <br> y tags) dentro del span
-    while (cell.firstChild) span.appendChild(cell.firstChild);
-    cell.appendChild(span);
-  }
-
-  // Calcula cuánto hay que mover para que el texto toque "abajo del todo" de la celda
-  function computeDy(cell) {
-    const span = cell.querySelector(".cell-text");
-    if (!span) return;
-
-    // Medición segura: quitamos transform temporalmente
-    const prevTransform = span.style.transform;
-    span.style.transform = "none";
-
-    const cs = getComputedStyle(cell);
-    const padTop = parseFloat(cs.paddingTop) || 0;
-
-    // Alto real del texto
-    const textHeight = span.getBoundingClientRect().height;
-
-    /**
-     * Queremos que el BOTTOM del texto llegue al final de la celda (clientHeight),
-     * y el TOP del texto parte desde paddingTop.
-     *
-     * padTop + dy + textHeight = cell.clientHeight
-     * dy = cell.clientHeight - padTop - textHeight
-     */
-    const dyPx = Math.max(0, cell.clientHeight - padTop - textHeight);
-
-    // Guardamos en rem (para tu criterio de unidades)
-    cell.style.setProperty("--dy", `${pxToRem(dyPx)}rem`);
-
-    span.style.transform = prevTransform;
-  }
-
-  function refreshAll() {
-    document.querySelectorAll(".cell").forEach((cell) => {
-      ensureCellTextSpan(cell);
-      computeDy(cell);
+  function fitAll(){
+    $('.cell').each(function(){
+      fitCellText($(this));
     });
   }
 
-  function initToggle() {
-    document.querySelectorAll(".cell").forEach((cell) => {
-      cell.addEventListener("mouseenter", () => {
-        computeDy(cell);
-        cell.dataset.pos = cell.dataset.pos === "bottom" ? "top" : "bottom";
-        if (cell.dataset.pos === "top") cell.removeAttribute("data-pos");
-      });
+  $(function(){
+    fitAll();
+    $(window).on('resize', fitAll);
+  });
 
-      // Para móvil / tap
-      cell.addEventListener("click", () => {
-        computeDy(cell);
-        cell.dataset.pos = cell.dataset.pos === "bottom" ? "top" : "bottom";
-        if (cell.dataset.pos === "top") cell.removeAttribute("data-pos");
-      });
-    });
-  }
+  $(function () {
+    const GAP_BETWEEN_GROUPS = 2000; // 2s entre ráfagas
 
-  async function boot() {
-    refreshAll();
-    initToggle();
+    // Ajusta estos si quieres el flash más/menos rápido
+    const MIN_ON  = 60;   // ms en blanco
+    const MAX_ON  = 110;
+    const MIN_GAP = 70;   // ms entre parpadeos dentro de la ráfaga
+    const MAX_GAP = 140;
 
-    // Espera a fuentes para medir bien
-    if (document.fonts?.ready) {
-      try {
-        await document.fonts.ready;
-        refreshAll();
-      } catch {}
+    function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+    function burst($el, done){
+      if ($el.data('blinking')) return;     // bloqueo: si está parpadeando, no empieza otra
+      $el.data('blinking', true);
+
+      let blinks = rand(3, 4);              // 3 o 4 parpadeos por ráfaga
+
+      function oneBlink(){
+        $el.addClass('blink-white');
+        setTimeout(function(){
+          $el.removeClass('blink-white');
+
+          blinks--;
+          if (blinks <= 0) {
+            $el.data('blinking', false);
+            done && done();
+            return;
+          }
+
+          setTimeout(oneBlink, rand(MIN_GAP, MAX_GAP));
+        }, rand(MIN_ON, MAX_ON));
+      }
+
+      oneBlink();
     }
 
-    // Recalcular al redimensionar
-    window.addEventListener("resize", refreshAll);
+    function loop($el){
+      burst($el, function(){
+        setTimeout(function(){
+          loop($el);
+        }, GAP_BETWEEN_GROUPS); // 2s después de terminar la ráfaga
+      });
+    }
 
-    // Un frame extra por si el layout tarda
-    requestAnimationFrame(refreshAll);
+    // SOLO spans con .cell-text (los que tienes en tu HTML)
+    $('.cell-text').each(function(){
+      const $el = $(this);
+      setTimeout(function(){ loop($el); }, rand(0, 1500)); // delay inicial aleatorio
+    });
+  });
+
+
+
+$(function () {
+
+  function setMenu(open){
+    const $header = $('.site-header');
+    $header.toggleClass('is-open', open);
+    $('.menu-toggle').attr('aria-expanded', open ? 'true' : 'false');
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot);
-  } else {
-    boot();
-  }
+  // Abrir/cerrar con el botón de la pastilla
+  $('.menu-toggle').on('click', function () {
+    setMenu(!$('.site-header').hasClass('is-open'));
+  });
 
-  // app.js
+  // Cerrar con el botón "Cerrar" del panel
+  $(document).on('click', '.menu-close', function () {
+    setMenu(false);
+  });
 
+  // 👉 aquí debajo pega tu “función final” tal cual (si la tienes)
 
-})();
-
-        document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll(".cell").forEach((cell) => {
-            // Asegura estado inicial
-            if (!cell.classList.contains("in-top") && !cell.classList.contains("in-bottom")) {
-            cell.classList.add("in-top");
-            }
-
-            // Toggle al entrar con el ratón
-            cell.addEventListener("mouseenter", () => {
-            if (cell.classList.contains("in-bottom")) {
-                cell.classList.remove("in-bottom");
-                cell.classList.add("in-top");
-            } else {
-                cell.classList.remove("in-top");
-                cell.classList.add("in-bottom");
-                cell.classList.remove("in-top");
-            }
-            });
-        });
-        });
-
-
+});

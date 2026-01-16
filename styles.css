@@ -1,14 +1,161 @@
 :root{
-  --red: #D2F029;
-  --red-deep: #636B36;
+    --bar-h: 84px; 
+    --red: #D2F029;
+    --red-deep: #636B36;
 }
 
 html, body { height: 100%; }
 
 body{
+    
+    overflow: hidden;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+
+
+.header-panel{
+  position: fixed;
+  inset: 0;
   background: var(--red);
-  overflow: hidden;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+
+.menu-close{
+    display: flex;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.site-header.is-open .header-panel{
+    position: fixed;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    z-index: 20000;
+}
+
+.site-header{
+  
+  inset-inline: 0;
+  top: clamp(0.8rem, 2vw, 1.2rem);
+  z-index: 10000;
+
+  display: flex;
+  justify-content: center;
+
+  /* para que solo “clickees” la pastilla */
+  pointer-events: none;
+}
+
+.menu-bar{
+    
+    pointer-events: auto;
+        
+    width: min(27.5rem, 92vw);
+
+    margin-top: 1rem;
+
+    background: var(--menu-bg);
+    color: var(--menu-text);
+
+    border-radius: clamp(0.9rem, 1.4vw, 1.3rem);
+    padding: clamp(0.85rem, 1.2vw, 1.05rem) clamp(1.1rem, 1.6vw, 1.4rem);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    box-shadow: 0 clamp(0.25rem, 0.6vw, 0.45rem)
+                clamp(0.9rem, 2.2vw, 1.4rem) rgba(167, 167, 167, 0.25);
+
+    backdrop-filter: blur(clamp(0.2rem, 0.8vw, 0.6rem));
+}
+
+.menu-bar.menu-toggle .menu-label{
+  color: rgb(0, 0, 0);
+  transition: color .22s ease;
+}
+
+/* Texto abierto (blanco) */
+.site-header.is-open .menu-bar.menu-toggle .menu-label{
+  color: #fff;
+}
+
+.menu-label{
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: clamp(0.75rem, 1.1vw, 0.9rem);
+}
+
+/* Botón hamburguesa */
+
+
+.burger{
+  display: grid;
+  place-items: center;
+}
+
+/* tamaños responsive del icono */
+.burger .bi{
+  font-size: clamp(1.2rem, 1.8vw, 1.8rem);
+  line-height: 1;
+}
+
+.menu-bar.menu-toggle .burger,
+.menu-bar.menu-toggle .burger .bi{
+  color: rgb(0, 0, 0);
+  transition: color .22s ease;
+}
+
+/* Iconos abiertos (blanco) */
+.site-header.is-open .menu-bar.menu-toggle .burger,
+.site-header.is-open .menu-bar.menu-toggle .burger .bi{
+  color: #fff;
+}
+
+/* por defecto: se ve la hamburguesa */
+.icon-close{ display: none; }
+.icon-open{ display: inline; }
+
+/* cuando el menú está abierto, se ve la X */
+.site-header.is-open .icon-open{ display: none; }
+.site-header.is-open .icon-close{ display: inline; }
+.menu-bar.menu-toggle{
+  position: fixed;
+  z-index: 999999;
+
+    
+
+  inset-inline: 0;
+  margin-inline: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 0;
+  background: rgba(255,255,255,.18);
+  border-radius: clamp(0.9rem, 1.4vw, 1.3rem);
+
+  backdrop-filter: blur(clamp(0.35rem, 1vw, 0.8rem));
+  -webkit-backdrop-filter: blur(clamp(0.35rem, 1vw, 0.8rem));
+
+  pointer-events: auto;
+}
+.site-header.is-open .menu-bar.menu-toggle{
+   background: var(--red-deep);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 /* GRID DE FONDO (DESKTOP: 12x3 = 36 celdas visibles) */
@@ -21,7 +168,6 @@ body{
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: repeat(3, 1fr);
 
-  /* ✅ menos espacio entre cajas */
   gap: clamp(0.25rem, 0.6vw, 0.5rem);
 
   z-index: 1;
@@ -31,6 +177,8 @@ body{
 
 
 .cell{
+    
+  position: relative;
   border-radius: clamp(0.75rem, 1.1vw, 1.05rem);
   border: 0.0625rem solid rgba(255, 255, 255, 0.459);
   background: transparent;
@@ -45,7 +193,11 @@ body{
   line-height: 1.35;
 
   overflow: hidden;
-  transition: background-color .22s ease, border-color .22s ease;
+  transition: background-color .5s ease, border-color .22s ease;
+}
+
+.cell-text.blink-white{
+  color: #fff;
 }
 
 /* Hover: color clarito */
@@ -58,7 +210,7 @@ body{
 .cell .cell-text{
   display: block;
   will-change: transform;
-  transition: transform .28s ease;
+  transition: transform .120s ease;
 }
 
 /* Estado “abajo” (se queda abajo hasta el siguiente hover/entrada) */
@@ -69,6 +221,10 @@ body{
 .in-top{
   transform: translateY(0);
 }
+
+
+
+
 
 /* ✅ de arriba -> abajo al hover, y vuelve al salir */
 
@@ -87,7 +243,7 @@ body{
 /* PANEL CENTRAL */
 .menu-panel{
   position: fixed;
-  top: 50%;
+  top: 52%;
   left: 50%;
   transform: translate(-50%, -50%);
 
@@ -110,6 +266,9 @@ body{
   padding: clamp(1rem, 2vw, 1.4rem);
   scrollbar-width: thin;
 }
+
+
+
 
 .section-title{
   color: rgba(255,255,255,.7);
@@ -143,7 +302,6 @@ body{
 .menu-list a:hover{ text-decoration: underline; }
 
 .footer-links{
-  margin-top: auto;
   padding-top: clamp(0.7rem, 1.4vw, 0.9rem);
   border-top: 0.0625rem solid rgba(255,255,255,.12);
 
@@ -158,4 +316,11 @@ body{
 .footer-links a{
   color: rgba(255,255,255,.85);
   text-decoration: underline;
+}
+
+@media (max-width: 48rem){
+  .site-header{
+    top: auto;
+    bottom: clamp(0.8rem, 2vw, 1.2rem);
+  }
 }
