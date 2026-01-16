@@ -755,9 +755,15 @@ body{
   text-decoration: underline;
 }
 
+footer{
+  position: absolute;
+  z-index: 200000000000;
+}
+
 .cr2 {
     height: 50vh !important;
     border-color: var(--red-deep) !important;
+  background-color: white;
 
 }
 
